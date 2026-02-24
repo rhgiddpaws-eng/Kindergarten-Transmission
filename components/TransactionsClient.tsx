@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Search, Download, Upload } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 type AccountCode = { id: string; code: string; name: string; type: string };
 type Transaction = {
@@ -26,6 +27,7 @@ type TransactionClientProps = {
 };
 
 export default function TransactionsClient({ initialTransactions, kindergartens, accountCodes }: TransactionClientProps) {
+    const router = useRouter();
     const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
     const [searchYear, setSearchYear] = useState('2026');
     const [searchMonth, setSearchMonth] = useState('02');
@@ -43,6 +45,20 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
     const [showCloseMonth, setShowCloseMonth] = useState(false);
     const [showNewEntry, setShowNewEntry] = useState(false);
     const [journalTarget, setJournalTarget] = useState<Transaction | null>(null);
+
+    // 새 기능 모달 상태
+    const [showOverpayment, setShowOverpayment] = useState(false);
+    const [showExcelUpload, setShowExcelUpload] = useState(false);
+    const [showCmsImport, setShowCmsImport] = useState(false);
+    const [showAccountStatus, setShowAccountStatus] = useState(false);
+    const [showClientManagement, setShowClientManagement] = useState(false);
+
+    // 거래처 임시 데이터
+    const [clients, setClients] = useState([
+        { id: 1, name: '교보문고', businessNumber: '123-45-67890' },
+        { id: 2, name: '삼성물산', businessNumber: '987-65-43210' }
+    ]);
+    const [newClientName, setNewClientName] = useState('');
 
     // New entry form
     const [newEntry, setNewEntry] = useState({ type: 'INCOME', date: '2026-02-24', amount: '', description: '', accountCodeId: '' });
@@ -208,33 +224,35 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
                         <div className="bg-white text-[#005ba6] font-bold px-4 py-1.5 border-t-2 border-l-2 border-r-2 border-white rounded-t-sm inline-flex items-center gap-1 cursor-default text-[12px]">
                             ■ 회계기능
                         </div>
-                        {['■ 회계검증', '⚙ 부가기능', '🖨 출 력', '🔧 설 정', '📋 관항목표'].map(tab => (
-                            <div key={tab} className="text-white hover:bg-[#004885] px-4 py-1.5 cursor-pointer font-medium inline-flex items-center gap-1 text-[12px]">{tab}</div>
-                        ))}
-                        <div className="text-yellow-300 hover:bg-[#004885] px-4 py-1.5 cursor-pointer font-bold inline-flex items-center gap-1 ml-4 italic text-[12px]">e키즈빌CMS</div>
+                        <div onClick={() => alert('회계검증은 준비 중입니다.')} className="text-white hover:bg-[#004885] px-4 py-1.5 cursor-pointer font-medium inline-flex items-center gap-1 text-[12px]">■ 회계검증</div>
+                        <div onClick={() => router.push('/dashboard/budget')} className="text-white hover:bg-[#004885] px-4 py-1.5 cursor-pointer font-medium inline-flex items-center gap-1 text-[12px]">예산/결산</div>
+                        <div onClick={() => router.push('/dashboard/hr')} className="text-white hover:bg-[#004885] px-4 py-1.5 cursor-pointer font-medium inline-flex items-center gap-1 text-[12px]">인사관리</div>
+                        <div onClick={() => alert('노무관리는 인사관리 모듈과 통합 구현중입니다.')} className="text-white hover:bg-[#004885] px-4 py-1.5 cursor-pointer font-medium inline-flex items-center gap-1 text-[12px]">노무관리</div>
+                        <div onClick={() => router.push('/dashboard/settings')} className="text-white hover:bg-[#004885] px-4 py-1.5 cursor-pointer font-medium inline-flex items-center gap-1 text-[12px]">설정</div>
+                        <div onClick={() => alert('e키즈빌CMS 연동은 준비 중입니다.')} className="text-yellow-300 hover:bg-[#004885] px-4 py-1.5 cursor-pointer font-bold inline-flex items-center gap-1 ml-4 italic text-[12px]">e키즈빌CMS</div>
                     </div>
 
                     <div className="p-2 bg-[#f8f9fa] flex flex-col gap-1">
                         <div className="flex gap-1 flex-wrap">
                             <button onClick={() => setShowAccountImport(true)} className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[90px] text-[12px]">계좌가져오기</button>
                             <button onClick={() => setShowMultiJournal(true)} className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[80px] text-[12px]">다중분개</button>
-                            <button className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[80px] text-[12px]">과오납적용</button>
+                            <button onClick={() => setShowOverpayment(true)} className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[80px] text-[12px]">과오납적용</button>
                             <button onClick={() => setShowNewEntry(true)} className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[70px] text-[12px]">수기입력</button>
                             <button onClick={() => setShowCloseMonth(true)} className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[90px] text-[12px]">입력마감하기</button>
-                            <button className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[80px] text-[12px]">엑셀업로드</button>
-                            <button className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[90px] text-[12px]">CMS가져오기</button>
+                            <button onClick={() => setShowExcelUpload(true)} className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[80px] text-[12px]">엑셀업로드</button>
+                            <button onClick={() => setShowCmsImport(true)} className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[90px] text-[12px]">CMS가져오기</button>
                             <button onClick={handleExcelDownload} className="border border-green-500 bg-green-50 text-green-800 hover:bg-green-100 px-2 py-1 font-bold min-w-[90px] text-center ml-auto text-[12px] flex items-center gap-1">
                                 <Download className="w-3 h-3" />엑셀다운
                             </button>
                         </div>
                         <div className="flex gap-1 flex-wrap">
-                            <button className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[90px] text-[12px]">계좌현황보기</button>
-                            <button className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[80px] text-[12px]">관항목조정</button>
-                            <button className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[80px] text-[12px]">과오납해제</button>
-                            <button className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[80px] text-[12px]">거래처관리</button>
-                            <button className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[70px] text-[12px]">조정마감</button>
+                            <button onClick={() => setShowAccountStatus(true)} className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[90px] text-[12px]">계좌현황보기</button>
+                            <button onClick={() => alert('준비 중인 기능입니다.')} className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[80px] text-[12px]">관항목조정</button>
+                            <button onClick={() => alert('준비 중인 기능입니다.')} className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[80px] text-[12px]">과오납해제</button>
+                            <button onClick={() => setShowClientManagement(true)} className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[80px] text-[12px]">거래처관리</button>
+                            <button onClick={() => alert('준비 중인 기능입니다.')} className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[70px] text-[12px]">조정마감</button>
                             <button onClick={() => setShowPrevMonth(true)} className="border border-indigo-400 bg-indigo-50 text-indigo-800 hover:bg-indigo-100 px-2 py-1 font-medium min-w-[100px] text-[12px]">전월자료가져오기</button>
-                            <button className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[80px] text-[12px]">거래처조정</button>
+                            <button onClick={() => alert('준비 중인 기능입니다.')} className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[80px] text-[12px]">거래처조정</button>
                             <button onClick={() => { if (confirm('전체 삭제하시겠습니까?')) setTransactions([]); }} className="border border-orange-500 bg-[#ffe5cc] text-orange-800 hover:bg-orange-200 px-2 py-1 font-bold min-w-[70px] text-center ml-auto text-[12px]">전체삭제</button>
                         </div>
                     </div>
@@ -495,6 +513,132 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
                         <div className="flex gap-2">
                             <button onClick={() => setShowMultiJournal(false)} className="flex-1 border border-gray-300 rounded py-1.5 text-[12px] hover:bg-gray-50">취소</button>
                             <button onClick={() => { alert('✅ 다중분개 저장 완료!'); setShowMultiJournal(false); }} className="flex-1 bg-indigo-600 text-white rounded py-1.5 text-[12px] hover:bg-indigo-700">저장</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Overpayment Modal */}
+            {showOverpayment && (
+                <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
+                    <div className="bg-white rounded p-4 text-center w-[300px]">
+                        <h3 className="font-bold mb-4">과오납 처리</h3>
+                        <p className="text-gray-600 text-sm mb-4">선택된 건에 대해 과오납 처리를 진행하시겠습니까?</p>
+                        <div className="flex gap-2 justify-center">
+                            <button onClick={() => setShowOverpayment(false)} className="px-4 py-1 border bg-gray-100 hover:bg-gray-200">취소</button>
+                            <button onClick={() => {
+                                alert('과오납 처리가 완료되었습니다.');
+                                setShowOverpayment(false);
+                            }} className="px-4 py-1 border bg-red-600 text-white hover:bg-red-700">적용</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Excel Upload Modal */}
+            {showExcelUpload && (
+                <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
+                    <div className="bg-white rounded p-6 shadow-xl w-[400px]">
+                        <h3 className="font-bold mb-4 text-lg">엑셀 업로드</h3>
+                        <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50 mb-4 h-[100px] flex items-center justify-center cursor-pointer hover:bg-gray-100">
+                            <span className="text-gray-500 font-medium whitespace-pre-wrap text-sm">여기를 클릭하여 엑셀 파일을 업로드하세요.</span>
+                        </div>
+                        <div className="flex gap-2 justify-end mt-4">
+                            <button onClick={() => setShowExcelUpload(false)} className="px-4 py-2 border rounded hover:bg-gray-100">취소</button>
+                            <button onClick={() => {
+                                const newTx = { id: Date.now().toString(), type: 'INCOME', date: '2026-02-28', amount: 500000, description: '엑셀업로드 수입(모의)', status: 'NORMAL', accountCode: accountCodes[0], journaled: false };
+                                setTransactions(prev => [...prev, newTx]);
+                                alert('엑셀 데이터가 성공적으로 처리되었습니다.');
+                                setShowExcelUpload(false);
+                            }} className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 font-bold">
+                                업로드 실행
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* CMS Import Modal */}
+            {showCmsImport && (
+                <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
+                    <div className="bg-white rounded p-5 shadow-xl w-[350px]">
+                        <h3 className="font-bold mb-4">CMS 자료 가져오기</h3>
+                        <p className="text-sm text-gray-600 mb-6">e키즈빌 CMS 서버에서 최신 결제/승인 내역을 가져옵니다. 진행할까요?</p>
+                        <div className="flex gap-2 justify-end">
+                            <button onClick={() => setShowCmsImport(false)} className="px-4 py-2 border rounded text-sm hover:bg-gray-100">닫기</button>
+                            <button onClick={() => {
+                                const newTx = { id: Date.now().toString(), type: 'INCOME', date: '2026-02-28', amount: 120000, description: 'CMS 승인건(모의)', status: 'NORMAL', accountCode: accountCodes[0], journaled: false, clientName: 'CMS결제' };
+                                setTransactions(prev => [...prev, newTx]);
+                                alert('CMS 자료를 성공적으로 불러왔습니다.');
+                                setShowCmsImport(false);
+                            }} className="px-4 py-2 bg-[#005ba6] text-white text-sm rounded hover:bg-blue-700 font-bold">
+                                가져오기 시작
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Account Status Modal */}
+            {showAccountStatus && (
+                <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
+                    <div className="bg-white rounded p-5 shadow-xl w-[500px]">
+                        <div className="flex justify-between items-center mb-4 border-b pb-2">
+                            <h3 className="font-bold text-[#005ba6]">계좌 현황 뷰어</h3>
+                            <button onClick={() => setShowAccountStatus(false)} className="text-gray-500 hover:text-gray-800">✖</button>
+                        </div>
+                        <table className="w-full text-sm border">
+                            <thead className="bg-gray-100">
+                                <tr><th className="border p-2">은행명</th><th className="border p-2">계좌번호</th><th className="border p-2">잔액 (원)</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td className="border p-2 text-center">농협은행</td><td className="border p-2 text-center">123-4567-8901-23</td><td className="border p-2 text-right font-bold text-blue-600">8,500,000</td></tr>
+                                <tr><td className="border p-2 text-center">신한은행</td><td className="border p-2 text-center">110-123-456789</td><td className="border p-2 text-right font-bold text-blue-600">12,400,000</td></tr>
+                            </tbody>
+                        </table>
+                        <div className="text-right mt-4">
+                            <button onClick={() => setShowAccountStatus(false)} className="px-4 py-2 bg-gray-200 rounded text-sm hover:bg-gray-300">닫기</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Client Management Modal */}
+            {showClientManagement && (
+                <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
+                    <div className="bg-white rounded p-5 shadow-xl w-[500px]">
+                        <div className="flex justify-between items-center mb-4 border-b pb-2">
+                            <h3 className="font-bold text-[#005ba6]">거래처 관리</h3>
+                            <button onClick={() => setShowClientManagement(false)} className="text-gray-500 hover:text-gray-800">✖</button>
+                        </div>
+                        <div className="flex gap-2 mb-4">
+                            <input type="text" value={newClientName} onChange={e => setNewClientName(e.target.value)} placeholder="신규 거래처명" className="flex-1 border p-1.5 text-sm" />
+                            <button onClick={() => {
+                                if (newClientName) {
+                                    setClients([...clients, { id: Date.now(), name: newClientName, businessNumber: '000-00-00000' }]);
+                                    setNewClientName('');
+                                }
+                            }} className="bg-[#005ba6] text-white px-3 py-1.5 text-sm rounded">추가</button>
+                        </div>
+                        <table className="w-full text-sm border">
+                            <thead className="bg-gray-100">
+                                <tr><th className="border p-2 w-[50px]">ID</th><th className="border p-2">거래처명</th><th className="border p-2 w-[120px]">사업자번호</th><th className="border p-2 w-[60px]">비고</th></tr>
+                            </thead>
+                            <tbody>
+                                {clients.map(c => (
+                                    <tr key={c.id}>
+                                        <td className="border p-2 text-center">{c.id}</td>
+                                        <td className="border p-2 pl-3 font-medium">{c.name}</td>
+                                        <td className="border p-2 text-center text-gray-600">{c.businessNumber}</td>
+                                        <td className="border p-2 text-center">
+                                            <button onClick={() => setClients(clients.filter(client => client.id !== c.id))} className="text-red-600 hover:underline text-xs">삭제</button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <div className="text-right mt-4">
+                            <button onClick={() => setShowClientManagement(false)} className="px-4 py-2 bg-gray-200 rounded text-sm hover:bg-gray-300">확인완료</button>
                         </div>
                     </div>
                 </div>

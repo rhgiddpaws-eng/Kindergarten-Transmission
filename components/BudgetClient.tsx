@@ -4,15 +4,17 @@ import { useState } from 'react';
 import { MOCK_BUDGET_ITEMS, BudgetItem } from '../lib/mockData';
 import { Download, Plus, BarChart2, TrendingUp, TrendingDown, X, CheckCircle2 } from 'lucide-react';
 
-type Tab = '예산현황' | '세출예산' | '세입예산' | '예산편성' | '결산';
+type Tab = '본예산' | '추경예산' | '예산현황 및 통계' | '세입세출결산서' | '세입세출예산서' | '공시관련' | '설정';
 
 export default function BudgetClient() {
     const [activeTab, setActiveTab] = useState<Tab>('예산현황');
     const [budgetItems, setBudgetItems] = useState<BudgetItem[]>(MOCK_BUDGET_ITEMS);
     const [showEdit, setShowEdit] = useState<BudgetItem | null>(null);
     const [editBudget, setEditBudget] = useState('');
+    const [showEdufine, setShowEdufine] = useState(false);
     const [notification, setNotification] = useState<string | null>(null);
     const [filterType, setFilterType] = useState<'ALL' | 'INCOME' | 'EXPENSE'>('ALL');
+    const [isTransferred, setIsTransferred] = useState(false); // 전송 상태 추가
 
     const showNotif = (msg: string) => {
         setNotification(msg);
@@ -56,7 +58,9 @@ export default function BudgetClient() {
         URL.revokeObjectURL(url);
     };
 
-    const tabs: Tab[] = ['예산현황', '세출예산', '세입예산', '예산편성', '결산'];
+    const tabs: Tab[] = ['본예산', '추경예산', '예산현황 및 통계', '세입세출결산서', '세입세출예산서', '공시관련', '설정'];
+
+    const isMatch = totalBudgetIncome === totalBudgetExpense;
 
     return (
         <div className="space-y-4">
@@ -69,61 +73,55 @@ export default function BudgetClient() {
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight text-gray-900">예산/결산</h1>
-                    <p className="text-gray-500 mt-1 text-sm">2026년도 예산 현황 및 집행 내역</p>
+                    <h1 className="text-2xl font-bold tracking-tight text-gray-900">예산/결산 (본예산)</h1>
+                    <p className="text-gray-500 mt-1 text-sm">2026학년도 예산서 작성 및 현황</p>
                 </div>
                 <div className="flex gap-2">
                     <button onClick={exportCSV} className="border border-gray-300 flex items-center gap-2 text-gray-700 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-50 transition-all">
                         <Download className="w-4 h-4" />엑셀다운로드
                     </button>
-                    <button className="bg-indigo-600 flex items-center gap-2 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-all">
-                        <Plus className="w-4 h-4" />예산 추가
+                    <button onClick={() => setShowEdufine(true)} className="bg-indigo-600 flex items-center gap-2 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-all">
+                        <Plus className="w-4 h-4" />에듀파인 업로드
                     </button>
                 </div>
             </div>
 
-            {/* Summary Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                        <TrendingUp className="w-4 h-4 text-blue-500" />
-                        <span className="text-sm text-gray-500">세입 예산</span>
-                    </div>
-                    <div className="text-xl font-bold text-blue-600">{totalBudgetIncome.toLocaleString()}</div>
-                    <div className="text-xs text-gray-400 mt-1">집행: {totalExecutedIncome.toLocaleString()}</div>
-                    <div className="mt-2 w-full bg-blue-100 rounded-full h-1.5">
-                        <div className="bg-blue-500 h-1.5 rounded-full" style={{ width: `${execRate(totalExecutedIncome, totalBudgetIncome)}%` }} />
-                    </div>
-                    <div className="text-xs text-blue-600 mt-1">{execRate(totalExecutedIncome, totalBudgetIncome)}% 집행</div>
+            {/* 본예산 Dashboard */}
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
+                <h3 className="text-lg font-bold text-gray-800 mb-3">학년도 [2026년 ▼] 본예산 작성 현황</h3>
+                <div className="overflow-x-auto">
+                    <table className="min-w-full text-sm text-center border-collapse">
+                        <thead className="bg-[#eef4f9] text-[#003366] font-bold">
+                            <tr>
+                                <th className="border p-2">구분</th>
+                                <th className="border p-2">세입예산</th>
+                                <th className="border p-2">세출예산</th>
+                                <th className="border p-2">일치여부</th>
+                                <th className="border p-2">추출상태</th>
+                                <th className="border p-2">전송상태</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td className="border p-2 font-semibold">본예산</td>
+                                <td className="border p-2 text-blue-600 font-bold">{totalBudgetIncome.toLocaleString()}</td>
+                                <td className="border p-2 text-red-600 font-bold">{totalBudgetExpense.toLocaleString()}</td>
+                                <td className={`border p-2 font-bold ${isMatch ? 'text-green-600' : 'text-orange-500'}`}>
+                                    {isMatch ? '✅ 일치' : '❌ 불일치'}
+                                </td>
+                                <td className="border p-2 text-gray-600">생성완료</td>
+                                <td className={`border p-2 font-bold ${isTransferred ? 'text-indigo-600' : 'text-gray-600'}`}>
+                                    {isTransferred ? '전송완료' : '미전송'}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                        <TrendingDown className="w-4 h-4 text-red-500" />
-                        <span className="text-sm text-gray-500">세출 예산</span>
+                {!isMatch && (
+                    <div className="mt-3 text-sm text-red-600 bg-red-50 p-2 rounded">
+                        ⚠️ 세입 예산과 세출 예산의 합계가 일치하지 않습니다. 일치해야 에듀파인에 전송할 수 있습니다.
                     </div>
-                    <div className="text-xl font-bold text-red-600">{totalBudgetExpense.toLocaleString()}</div>
-                    <div className="text-xs text-gray-400 mt-1">집행: {totalExecutedExpense.toLocaleString()}</div>
-                    <div className="mt-2 w-full bg-red-100 rounded-full h-1.5">
-                        <div className="bg-red-500 h-1.5 rounded-full" style={{ width: `${execRate(totalExecutedExpense, totalBudgetExpense)}%` }} />
-                    </div>
-                    <div className="text-xs text-red-600 mt-1">{execRate(totalExecutedExpense, totalBudgetExpense)}% 집행</div>
-                </div>
-                <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                        <BarChart2 className="w-4 h-4 text-green-500" />
-                        <span className="text-sm text-gray-500">세입 잔액</span>
-                    </div>
-                    <div className="text-xl font-bold text-green-600">{(totalBudgetIncome - totalExecutedIncome).toLocaleString()}</div>
-                    <div className="text-xs text-gray-400 mt-1">미집행 잔액</div>
-                </div>
-                <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                        <BarChart2 className="w-4 h-4 text-orange-500" />
-                        <span className="text-sm text-gray-500">세출 잔액</span>
-                    </div>
-                    <div className="text-xl font-bold text-orange-600">{(totalBudgetExpense - totalExecutedExpense).toLocaleString()}</div>
-                    <div className="text-xs text-gray-400 mt-1">미집행 잔액</div>
-                </div>
+                )}
             </div>
 
             {/* Tab Bar */}
@@ -134,8 +132,8 @@ export default function BudgetClient() {
                             key={tab}
                             onClick={() => setActiveTab(tab)}
                             className={`px-5 py-3 text-sm font-medium transition-colors border-b-2 ${activeTab === tab
-                                    ? 'border-indigo-600 text-indigo-600 bg-white'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-white'
+                                ? 'border-indigo-600 text-indigo-600 bg-white'
+                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-white'
                                 }`}
                         >
                             {tab}
@@ -241,6 +239,72 @@ export default function BudgetClient() {
                         <div className="flex gap-2 mt-4">
                             <button onClick={() => setShowEdit(null)} className="flex-1 border border-gray-300 rounded-lg py-2 text-sm hover:bg-gray-50">취소</button>
                             <button onClick={handleSaveBudget} className="flex-1 bg-indigo-600 text-white rounded-lg py-2 text-sm hover:bg-indigo-700">저장</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Edufine Modal */}
+            {showEdufine && (
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+                    <div className="bg-white rounded-xl p-6 w-[450px] shadow-2xl">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="font-bold text-lg">에듀파인 업로드</h3>
+                            <button onClick={() => setShowEdufine(false)}><X className="w-5 h-5" /></button>
+                        </div>
+                        <div className="space-y-4">
+                            <div className="bg-[#eef4f9] p-3 rounded text-sm text-[#003366] mb-2 font-medium">
+                                예산 항목을 에듀파인 시스템 규격에 맞춰 전송합니다.
+                            </div>
+
+                            <div className="flex flex-col gap-1">
+                                <label className="text-sm font-semibold text-gray-700">업로드 대상</label>
+                                <select className="border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none">
+                                    <option>본예산</option>
+                                    <option>1차 추경</option>
+                                    <option>결산</option>
+                                </select>
+                            </div>
+
+                            <div className="flex flex-col gap-1">
+                                <label className="text-sm font-semibold text-gray-700">업로드 방식</label>
+                                <div className="flex items-center gap-4 mt-1">
+                                    <label className="flex items-center gap-2 text-sm"><input type="radio" name="uploadType" defaultChecked className="text-indigo-600" /> ◉ 자동 (K에듀파인전송)</label>
+                                    <label className="flex items-center gap-2 text-sm"><input type="radio" name="uploadType" className="text-indigo-600" /> ○ 수동 (파일)</label>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col gap-1">
+                                <label className="text-sm font-semibold text-gray-700">인증서</label>
+                                <select className="border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none">
+                                    <option>출납원 인증서 (원장_김말숙_2026)</option>
+                                    <option>기타 인증서</option>
+                                </select>
+                                <label className="flex items-center gap-2 text-sm mt-2 text-gray-600">
+                                    <input type="checkbox" defaultChecked className="text-indigo-600 rounded" /> ✓ 원장 함께 처리
+                                </label>
+                            </div>
+                        </div>
+                        <div className="flex gap-2 mt-6">
+                            <button onClick={() => setShowEdufine(false)} className="flex-1 border border-gray-300 rounded-lg py-2.5 text-sm hover:bg-gray-50 font-medium">취소</button>
+                            <button onClick={() => {
+                                setShowEdufine(false);
+                                setIsTransferred(true);
+
+                                // 모의 에듀파인 전송 데이터 파일 생성 및 다운로드 로직
+                                const edufineDataStr = `[EDUFINE TRANSFER DATA]\nDate: 2026-02-28\nStatus: SUCCESS\nIncome Total: ${totalBudgetIncome}\nExpense Total: ${totalBudgetExpense}\n-- END OF FILE --`;
+                                const blob = new Blob([edufineDataStr], { type: 'text/plain;charset=utf-8;' });
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = `edufine_transfer_${Date.now()}.txt`;
+                                a.click();
+                                URL.revokeObjectURL(url);
+
+                                showNotif('에듀파인 전송용 파일이 생성되었으며, 상태가 전송완료로 변경되었습니다.');
+                            }} className={`flex-1 text-white rounded-lg py-2.5 text-sm font-medium ${isMatch ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-gray-400 cursor-not-allowed'}`} disabled={!isMatch}>
+                                에듀파인 전송
+                            </button>
                         </div>
                     </div>
                 </div>

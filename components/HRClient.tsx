@@ -4,16 +4,32 @@ import { useState } from 'react';
 import { MOCK_EMPLOYEES, Employee } from '../lib/mockData';
 import { Plus, Edit, Trash2, X, Download, CheckCircle2, Users, Calculator } from 'lucide-react';
 
-type HrTab = '직원목록' | '급여대장' | '4대보험' | '인사발령';
+type HrTab = '기초코드등록' | '사원등록' | '급여자료입력' | '급여대장출력' | '4대보험 고지내역';
 
 export default function HrClient() {
-    const [activeTab, setActiveTab] = useState<HrTab>('직원목록');
+    const [activeTab, setActiveTab] = useState<HrTab>('사원등록');
     const [employees, setEmployees] = useState<Employee[]>(MOCK_EMPLOYEES);
     const [showAdd, setShowAdd] = useState(false);
     const [editTarget, setEditTarget] = useState<Employee | null>(null);
     const [form, setForm] = useState({ name: '', position: '', department: '', baseSalary: '' });
-    const [notification, setNotification] = useState<string | null>(null);
+    const [notification, setNotification] = useState('');
+
+    // 기초코드 상태
+    const [positionCodes, setPositionCodes] = useState([
+        { code: '01', name: '원장' }, { code: '02', name: '원감' }, { code: '03', name: '수석교사' }, { code: '04', name: '주임교사' }, { code: '05', name: '정교사' }
+    ]);
+    const [newPosition, setNewPosition] = useState('');
+
+    const [payItems, setPayItems] = useState([
+        { type: '지급', name: '기본급', tax: '과세' }, { type: '지급', name: '직책수당', tax: '과세' }, { type: '지급', name: '식대', tax: '비과세' },
+        { type: '공제', name: '국민연금', tax: '-' }, { type: '공제', name: '건강보험', tax: '-' }
+    ]);
+    const [newPayItem, setNewPayItem] = useState({ type: '지급', name: '', tax: '과세' });
+
+    // EDI 연동 상태
+    const [hasEdiData, setHasEdiData] = useState(false);
     const [showPayrollModal, setShowPayrollModal] = useState(false);
+    const [showEdiModal, setShowEdiModal] = useState(false);
 
     const showNotif = (msg: string) => {
         setNotification(msg);
@@ -73,7 +89,7 @@ export default function HrClient() {
         URL.revokeObjectURL(url);
     };
 
-    const tabs: HrTab[] = ['직원목록', '급여대장', '4대보험', '인사발령'];
+    const tabs: HrTab[] = ['기초코드등록', '사원등록', '급여자료입력', '급여대장출력', '4대보험 고지내역'];
 
     return (
         <div className="space-y-4">
@@ -142,7 +158,91 @@ export default function HrClient() {
                     ))}
                 </div>
 
-                {activeTab === '직원목록' && (
+                {activeTab === '기초코드등록' && (
+                    <div className="p-5">
+                        <div className="flex gap-6">
+                            {/* 직책/직급 코드표 */}
+                            <div className="flex-1 border border-gray-200 rounded-lg overflow-hidden flex flex-col">
+                                <div className="bg-gray-50 px-4 py-3 border-b border-gray-200 font-semibold text-gray-700 flex justify-between items-center">
+                                    직책/직급 코드표
+                                </div>
+                                <div className="p-2 border-b bg-white flex gap-2">
+                                    <input type="text" value={newPosition} onChange={e => setNewPosition(e.target.value)} placeholder="새 직책/직급 명칭 입력" className="flex-1 border px-2 py-1 text-sm rounded bg-gray-50 outline-none focus:bg-white" />
+                                    <button onClick={() => {
+                                        if (newPosition) {
+                                            const nextCode = String(positionCodes.length + 1).padStart(2, '0');
+                                            setPositionCodes([...positionCodes, { code: nextCode, name: newPosition }]);
+                                            setNewPosition('');
+                                            showNotif('직책 코드가 추가되었습니다.');
+                                        }
+                                    }} className="bg-indigo-600 text-white px-3 py-1 rounded text-sm whitespace-nowrap">+ 추가</button>
+                                </div>
+                                <table className="min-w-full text-sm">
+                                    <thead className="bg-gray-100">
+                                        <tr><th className="px-4 py-2 border-b text-left">코드</th><th className="px-4 py-2 border-b text-left">명칭</th><th className="px-4 py-2 border-b text-center">관리</th></tr>
+                                    </thead>
+                                    <tbody className="bg-white">
+                                        {positionCodes.map((pc, idx) => (
+                                            <tr key={idx}>
+                                                <td className="px-4 py-2 border-b text-gray-500">{pc.code}</td>
+                                                <td className="px-4 py-2 border-b font-medium">{pc.name}</td>
+                                                <td className="px-4 py-2 border-b text-center">
+                                                    <button onClick={() => setPositionCodes(positionCodes.filter((_, i) => i !== idx))} className="text-red-500 hover:text-red-700 text-xs font-semibold">삭제</button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {/* 지급/공제 항목 */}
+                            <div className="flex-1 border border-gray-200 rounded-lg overflow-hidden flex flex-col">
+                                <div className="bg-gray-50 px-4 py-3 border-b border-gray-200 font-semibold text-gray-700 flex justify-between items-center">
+                                    지급/공제 항목 설정
+                                </div>
+                                <div className="p-2 border-b bg-white flex gap-2">
+                                    <select value={newPayItem.type} onChange={e => setNewPayItem({ ...newPayItem, type: e.target.value })} className="border px-2 text-sm rounded bg-gray-50">
+                                        <option value="지급">지급</option>
+                                        <option value="공제">공제</option>
+                                    </select>
+                                    <input type="text" value={newPayItem.name} onChange={e => setNewPayItem({ ...newPayItem, name: e.target.value })} placeholder="명칭 입력" className="flex-1 border px-2 py-1 text-sm rounded bg-gray-50 outline-none focus:bg-white" />
+                                    <select value={newPayItem.tax} onChange={e => setNewPayItem({ ...newPayItem, tax: e.target.value })} className="border px-2 text-sm rounded bg-gray-50 w-[70px]">
+                                        <option value="과세">과세</option>
+                                        <option value="비과세">비과세</option>
+                                        <option value="-">-</option>
+                                    </select>
+                                    <button onClick={() => {
+                                        if (newPayItem.name) {
+                                            setPayItems([...payItems, { ...newPayItem }]);
+                                            setNewPayItem({ type: '지급', name: '', tax: '과세' });
+                                            showNotif('지급/공제 항목이 추가되었습니다.');
+                                        }
+                                    }} className="bg-indigo-600 text-white px-3 py-1 rounded text-sm whitespace-nowrap">+ 추가</button>
+                                </div>
+                                <table className="min-w-full text-sm">
+                                    <thead className="bg-gray-100">
+                                        <tr><th className="px-4 py-2 border-b text-left w-[60px]">구분</th><th className="px-4 py-2 border-b text-left">명칭</th><th className="px-4 py-2 border-b text-center">과세구분</th><th className="px-4 py-2 border-b text-center">관리</th></tr>
+                                    </thead>
+                                    <tbody className="bg-white">
+                                        {payItems.map((pi, idx) => (
+                                            <tr key={idx}>
+                                                <td className="px-4 py-2 border-b">
+                                                    <span className={`font-bold px-2 py-0.5 rounded text-xs ${pi.type === '지급' ? 'text-blue-600 bg-blue-50' : 'text-red-600 bg-red-50'}`}>{pi.type}</span>
+                                                </td>
+                                                <td className="px-4 py-2 border-b font-medium">{pi.name}</td>
+                                                <td className="px-4 py-2 border-b text-center text-gray-600">{pi.tax}</td>
+                                                <td className="px-4 py-2 border-b text-center">
+                                                    <button onClick={() => setPayItems(payItems.filter((_, i) => i !== idx))} className="text-red-500 hover:text-red-700 text-xs font-semibold">삭제</button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === '사원등록' && (
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
                             <tr>
@@ -188,11 +288,34 @@ export default function HrClient() {
                     </table>
                 )}
 
-                {activeTab === '급여대장' && (
+                {(activeTab === '급여자료입력' || activeTab === '급여대장출력') && (
                     <div className="p-5">
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="font-semibold text-gray-900">2026년 2월 급여대장</h3>
-                            <button onClick={() => alert('✅ EDI 파일 생성 완료! (목업)')} className="bg-blue-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-700">EDI 파일 생성</button>
+                            <h3 className="font-semibold text-gray-900">2026년 2월 급여 내역</h3>
+                            <div className="flex gap-2">
+                                {activeTab === '급여자료입력' && (
+                                    <button onClick={() => showNotif('기본급 및 수당 정보를 일괄 적용합니다. (목업)')} className="bg-white border border-gray-300 text-gray-700 text-sm px-4 py-2 rounded-lg hover:bg-gray-50">일괄입력</button>
+                                )}
+                                <button onClick={() => {
+                                    // 모의 EDI 엑셀/CSV 파일 다운로드 로직
+                                    const ediCsvData = "이름,기본급,국민연금,건강보험,고용보험,장기요양\n" +
+                                        employees.map(e => {
+                                            const ins = calcInsurance(e.baseSalary);
+                                            return `${e.name},${e.baseSalary},${ins.national},${ins.health},${ins.employment},${ins.longterm}`;
+                                        }).join("\n");
+                                    const blob = new Blob(['\uFEFF' + ediCsvData], { type: 'text/csv;charset=utf-8;' });
+                                    const url = URL.createObjectURL(blob);
+                                    const a = document.createElement('a');
+                                    a.href = url;
+                                    a.download = `EDI_신고파일_${Date.now()}.csv`;
+                                    a.click();
+                                    URL.revokeObjectURL(url);
+
+                                    showNotif('EDI 파일이 생성되어 다운로드되었습니다.');
+                                }} className="bg-blue-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-700 shadow-sm transition-colors">
+                                    EDI 파일 생성
+                                </button>
+                            </div>
                         </div>
                         <table className="min-w-full text-sm border border-gray-200">
                             <thead className="bg-gray-100">
@@ -230,59 +353,93 @@ export default function HrClient() {
                     </div>
                 )}
 
-                {activeTab === '4대보험' && (
+                {activeTab === '4대보험 고지내역' && (
                     <div className="p-5">
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="font-semibold text-gray-900">4대보험 보험료 내역</h3>
-                            <button onClick={() => alert('✅ EDI 신고 파일 생성 완료! (목업)')} className="bg-blue-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-700">EDI 신고 파일</button>
+                            <h3 className="font-semibold text-gray-900">4대보험 고지내역 대사 (계산액 vs 고지액)</h3>
+                            <div className="flex gap-2">
+                                <button onClick={() => setShowEdiModal(true)} className="bg-indigo-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-indigo-700 flex items-center gap-2 font-medium shadow-sm transition-colors">
+                                    <Download className="w-4 h-4" /> EDI 고지내역 가져오기
+                                </button>
+                                <button onClick={() => {
+                                    // 4대보험 고지내역 관련 모의 EDI 데이터 파일 다운로드 로직
+                                    const ediCsvData = "사원명,국민연금,건강보험,장기요양,고용보험\n" +
+                                        employees.filter(e => e.isActive).map(e => {
+                                            const ins = calcInsurance(e.baseSalary);
+                                            return `${e.name},${ins.national},${ins.health},${ins.longterm},${ins.employment}`;
+                                        }).join("\n");
+                                    const blob = new Blob(['\uFEFF' + ediCsvData], { type: 'text/csv;charset=utf-8;' });
+                                    const url = URL.createObjectURL(blob);
+                                    const a = document.createElement('a');
+                                    a.href = url;
+                                    a.download = `4대보험_EDI_${Date.now()}.csv`;
+                                    a.click();
+                                    URL.revokeObjectURL(url);
+                                    showNotif('4대보험 EDI 신고 파일이 생성/다운로드되었습니다.');
+                                }} className="bg-blue-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-700 shadow-sm transition-colors">EDI 신고 파일</button>
+                            </div>
                         </div>
-                        <table className="min-w-full text-sm border border-gray-200">
-                            <thead className="bg-gray-100">
-                                <tr>
-                                    {['이름', '기본급', '국민연금', '건강보험', '장기요양', '고용보험', '계(근로자)', '계(사용자)'].map(h => (
-                                        <th key={h} className="px-3 py-2 text-left text-xs font-semibold text-gray-600 border-r border-gray-200">{h}</th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-100">
-                                {employees.filter(e => e.isActive).map(emp => {
-                                    const ins = calcInsurance(emp.baseSalary);
-                                    const worker = ins.national + ins.health + ins.longterm + ins.employment;
-                                    const employer = Math.round(worker * 1.05);
-                                    return (
-                                        <tr key={emp.id} className="hover:bg-gray-50">
-                                            <td className="px-3 py-2 font-medium border-r border-gray-200">{emp.name}</td>
-                                            <td className="px-3 py-2 text-right border-r border-gray-200">{emp.baseSalary.toLocaleString()}</td>
-                                            <td className="px-3 py-2 text-right border-r border-gray-200">{ins.national.toLocaleString()}</td>
-                                            <td className="px-3 py-2 text-right border-r border-gray-200">{ins.health.toLocaleString()}</td>
-                                            <td className="px-3 py-2 text-right border-r border-gray-200">{ins.longterm.toLocaleString()}</td>
-                                            <td className="px-3 py-2 text-right border-r border-gray-200">{ins.employment.toLocaleString()}</td>
-                                            <td className="px-3 py-2 text-right font-bold text-red-600 border-r border-gray-200">{worker.toLocaleString()}</td>
-                                            <td className="px-3 py-2 text-right font-bold text-orange-600">{employer.toLocaleString()}</td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full text-sm border border-gray-200 whitespace-nowrap">
+                                <thead className="bg-gray-100">
+                                    <tr>
+                                        {['이름', '구분', '국민연금', '건강보험', '장기요양', '고용보험', '계(근로자)', '계(사용자)'].map(h => (
+                                            <th key={h} className="px-3 py-2 text-center text-xs font-semibold text-gray-600 border-r border-gray-200">{h}</th>
+                                        ))}
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100 bg-white">
+                                    {employees.filter(e => e.isActive).map((emp, index) => {
+                                        const ins = calcInsurance(emp.baseSalary);
+                                        const worker = ins.national + ins.health + ins.longterm + ins.employment;
+                                        const employer = Math.round(worker * 1.05);
 
-                {activeTab === '인사발령' && (
-                    <div className="p-5">
-                        <div className="text-sm text-gray-500 mb-4">2026년 인사발령 내역</div>
-                        <div className="space-y-2">
-                            {[
-                                { date: '2026-01-01', name: '김선생', from: '교사', to: '주임교사', type: '승진' },
-                                { date: '2026-02-01', name: '이민준', from: '보조교사', to: '교사', type: '승진' },
-                                { date: '2026-02-15', name: '박지현', from: '행정원', to: '행정주임', type: '발령' },
-                            ].map((evt, i) => (
-                                <div key={i} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                                    <span className="text-xs text-gray-400 w-24">{evt.date}</span>
-                                    <span className="font-medium">{evt.name}</span>
-                                    <span className="text-gray-500 text-sm">{evt.from} → {evt.to}</span>
-                                    <span className={`ml-auto px-2 py-0.5 rounded-full text-xs font-medium ${evt.type === '승진' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>{evt.type}</span>
-                                </div>
-                            ))}
+                                        // EDI 연동 결과 시뮬레이션: 일부 직원(짝수 인덱스 등)에게 모의 차액 10원~20원 발생
+                                        const isDiff = hasEdiData && index % 2 === 0;
+                                        const mockDiff = isDiff ? 10 : 0;
+                                        const noticeHealth = ins.health + mockDiff;
+                                        const noticeWorker = worker + mockDiff;
+                                        const noticeEmployer = employer + mockDiff;
+
+                                        return (
+                                            <>
+                                                <tr key={emp.id + '_calc'} className="hover:bg-gray-50 border-b-0">
+                                                    <td className="px-3 py-2 font-medium border-r border-gray-200 text-center" rowSpan={hasEdiData ? 3 : 1}>{emp.name}</td>
+                                                    <td className="px-3 py-2 text-center border-r border-gray-200 bg-gray-50 text-gray-600 text-xs font-semibold">계산액</td>
+                                                    <td className="px-3 py-2 text-right border-r border-gray-200 text-gray-700">{ins.national.toLocaleString()}</td>
+                                                    <td className="px-3 py-2 text-right border-r border-gray-200 text-gray-700">{ins.health.toLocaleString()}</td>
+                                                    <td className="px-3 py-2 text-right border-r border-gray-200 text-gray-700">{ins.longterm.toLocaleString()}</td>
+                                                    <td className="px-3 py-2 text-right border-r border-gray-200 text-gray-700">{ins.employment.toLocaleString()}</td>
+                                                    <td className="px-3 py-2 text-right font-bold text-red-600 border-r border-gray-200">{worker.toLocaleString()}</td>
+                                                    <td className="px-3 py-2 text-right font-bold text-orange-600">{employer.toLocaleString()}</td>
+                                                </tr>
+                                                {hasEdiData && (
+                                                    <tr key={emp.id + '_notice'} className="hover:bg-gray-50 border-b-0">
+                                                        <td className="px-3 py-2 text-center border-r border-gray-200 bg-blue-50 text-blue-700 text-xs font-semibold">고지액</td>
+                                                        <td className="px-3 py-2 text-right border-r border-gray-200 font-medium">{ins.national.toLocaleString()}</td>
+                                                        <td className="px-3 py-2 text-right border-r border-gray-200 font-medium">{noticeHealth.toLocaleString()}</td>
+                                                        <td className="px-3 py-2 text-right border-r border-gray-200 font-medium">{ins.longterm.toLocaleString()}</td>
+                                                        <td className="px-3 py-2 text-right border-r border-gray-200 font-medium">{ins.employment.toLocaleString()}</td>
+                                                        <td className="px-3 py-2 text-right font-bold text-blue-700 border-r border-gray-200">{noticeWorker.toLocaleString()}</td>
+                                                        <td className="px-3 py-2 text-right font-bold text-blue-700">{noticeEmployer.toLocaleString()}</td>
+                                                    </tr>
+                                                )}
+                                                {hasEdiData && (
+                                                    <tr key={emp.id + '_diff'} className={isDiff ? 'bg-red-50/30' : ''}>
+                                                        <td className={`px-3 py-2 text-center border-r border-gray-200 ${isDiff ? 'text-red-600' : 'text-gray-500'} text-xs font-semibold`}>차액</td>
+                                                        <td className="px-3 py-2 text-right border-r border-gray-200 text-gray-500">0</td>
+                                                        <td className={`px-3 py-2 text-right border-r border-gray-200 font-bold ${isDiff ? 'text-red-500' : 'text-gray-500'}`}>{mockDiff}</td>
+                                                        <td className="px-3 py-2 text-right border-r border-gray-200 text-gray-500">0</td>
+                                                        <td className="px-3 py-2 text-right border-r border-gray-200 text-gray-500">0</td>
+                                                        <td className={`px-3 py-2 text-right font-bold ${isDiff ? 'text-red-500' : 'text-gray-500'} border-r border-gray-200`}>{mockDiff}</td>
+                                                        <td className={`px-3 py-2 text-right font-bold ${isDiff ? 'text-red-500' : 'text-gray-500'}`}>{mockDiff}</td>
+                                                    </tr>
+                                                )}
+                                            </>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 )}
@@ -361,6 +518,57 @@ export default function HrClient() {
                         <div className="flex gap-2">
                             <button onClick={() => setShowPayrollModal(false)} className="flex-1 border border-gray-300 rounded-lg py-2 text-sm hover:bg-gray-50">닫기</button>
                             <button onClick={() => { alert('✅ 급여 내역이 현금출납부에 반영되었습니다! (목업)'); setShowPayrollModal(false); }} className="flex-1 bg-indigo-600 text-white rounded-lg py-2 text-sm hover:bg-indigo-700">현금출납부 반영</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* EDI Import Modal */}
+            {showEdiModal && (
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+                    <div className="bg-white rounded-xl p-6 w-[450px] shadow-2xl">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="font-bold text-lg">4대보험 고지내역 EDI 가져오기</h3>
+                            <button onClick={() => setShowEdiModal(false)}><X className="w-5 h-5" /></button>
+                        </div>
+                        <div className="space-y-4">
+                            <div className="bg-[#eef4f9] p-3 rounded text-sm text-[#003366] mb-2 font-medium">
+                                사회보험 EDI 사이트와 연동하여 당월 고지내역을 조회합니다.
+                            </div>
+
+                            <div className="flex flex-col gap-1">
+                                <label className="text-sm font-semibold text-gray-700">고지월</label>
+                                <select className="border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none">
+                                    <option>2026년 2월</option>
+                                    <option>2026년 1월</option>
+                                </select>
+                            </div>
+
+                            <div className="flex flex-col gap-1">
+                                <label className="text-sm font-semibold text-gray-700">사업장 관리번호</label>
+                                <input type="text" value="123-45-67890-0" readOnly className="border border-gray-200 bg-gray-50 rounded-lg px-3 py-2 text-sm outline-none text-gray-500" />
+                            </div>
+
+                            <div className="flex flex-col gap-1">
+                                <label className="text-sm font-semibold text-gray-700">인증서 선택</label>
+                                <select className="border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none">
+                                    <option>사업장 공동인증서 (유치원_법인)</option>
+                                </select>
+                            </div>
+
+                            <div className="flex items-center gap-2 mt-2">
+                                <input type="password" placeholder="인증서 비밀번호 입력" className="border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none w-full" />
+                            </div>
+                        </div>
+                        <div className="flex gap-2 pt-2">
+                            <button onClick={() => setShowEdiModal(false)} className="flex-1 border border-gray-300 rounded-lg py-3 text-sm hover:bg-gray-50 font-medium text-gray-700">취소</button>
+                            <button onClick={() => {
+                                setHasEdiData(true);
+                                setShowEdiModal(false);
+                                showNotif('EDI 고지내역 연동 시뮬레이션이 완료되었습니다. (고지액 불일치 건 하이라이트 표시)');
+                            }} className="flex-1 bg-indigo-600 text-white rounded-lg py-3 text-sm font-medium hover:bg-indigo-700 shadow-sm">
+                                인증서 로그인 및 자료 가져오기
+                            </button>
                         </div>
                     </div>
                 </div>
