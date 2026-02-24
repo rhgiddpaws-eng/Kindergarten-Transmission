@@ -1,4 +1,4 @@
-import HrClient from '@/components/HRClient';
+import HrClient from '@/components/HrClient';
 
 export default function HRPage() {
     return <HrClient />;
