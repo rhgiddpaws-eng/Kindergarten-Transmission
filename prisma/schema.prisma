@@ -1,0 +1,144 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("STAFF") // ADMIN, STAFF
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Kindergarten {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  edufineId   String
+  edufinePw   String   // Expected to be encrypted
+  certId      String?  // Certificate ID or path
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  transactions Transaction[]
+  bankAccounts BankAccount[]
+  budgets      Budget[]
+  employees    Employee[]
+}
+
+model AccountCode {
+  id          String   @id @default(cuid())
+  code        String   @unique // e.g., "110", "210"
+  name        String   // e.g., "수입", "지출", "목", "세목"
+  type        String   // "INCOME", "EXPENSE"
+  description String?
+  isActive    Boolean  @default(true)
+  
+  transactions Transaction[]
+  budgets      Budget[]
+}
+
+model Transaction {
+  id              String   @id @default(cuid())
+  kindergartenId  String
+  accountCodeId   String
+  type            String   // "INCOME" or "EXPENSE"
+  amount          Int
+  date            DateTime
+  description     String
+  status          String   @default("PENDING") // PENDING, PROCESSING, SUCCESS, FAILED
+  errorMessage    String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  kindergarten Kindergarten @relation(fields: [kindergartenId], references: [id], onDelete: Cascade)
+  accountCode  AccountCode  @relation(fields: [accountCodeId], references: [id])
+  logs         TransmissionLog[]
+}
+
+model TransmissionLog {
+  id            String   @id @default(cuid())
+  transactionId String
+  status        String   // SUCCESS, FAILED
+  message       String?
+  attemptedAt   DateTime @default(now())
+
+  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+}
+
+model BankAccount {
+  id              String   @id @default(cuid())
+  kindergartenId  String
+  bankName        String
+  accountNumber   String
+  ownerName       String
+  loginId         String?
+  loginPassword   String?  // encrypted
+  isFastLookup    Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  kindergarten Kindergarten @relation(fields: [kindergartenId], references: [id], onDelete: Cascade)
+}
+
+model Budget {
+  id              String   @id @default(cuid())
+  kindergartenId  String
+  year            Int
+  type            String   // "INCOME" or "EXPENSE"
+  amount          Int
+  accountCodeId   String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  kindergarten Kindergarten @relation(fields: [kindergartenId], references: [id], onDelete: Cascade)
+  accountCode  AccountCode  @relation(fields: [accountCodeId], references: [id])
+}
+
+model Employee {
+  id              String   @id @default(cuid())
+  kindergartenId  String
+  name            String
+  position        String
+  joinDate        DateTime
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  kindergarten Kindergarten @relation(fields: [kindergartenId], references: [id], onDelete: Cascade)
+  salaries     Salary[]
+  ediRecords   EdiRecord[]
+}
+
+model Salary {
+  id              String   @id @default(cuid())
+  employeeId      String
+  yearMonth       String   // e.g., "2026-02"
+  basePay         Int
+  bonus           Int      @default(0)
+  tax             Int      @default(0)
+  insurance       Int      @default(0)
+  netPay          Int
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+}
+
+model EdiRecord {
+  id              String   @id @default(cuid())
+  employeeId      String
+  yearMonth       String   // e.g., "2026-02"
+  insuranceType   String   // "HEALTH", "PENSION", "EMPLOYMENT"
+  amount          Int
+  createdAt       DateTime @default(now())
+
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+}
