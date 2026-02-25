@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Fragment } from 'react';
 import { MOCK_EMPLOYEES, Employee } from '../lib/mockData';
-import { Plus, Edit, Trash2, X, Download, CheckCircle2, Users, Calculator } from 'lucide-react';
+import { Plus, Edit, Trash2, X, Download, CheckCircle2, Users, Calculator, FileText, Mail, Printer } from 'lucide-react';
 
 type HrTab = '기초코드등록' | '사원등록' | '급여자료입력' | '급여대장출력' | '4대보험 고지내역';
 
@@ -30,6 +30,7 @@ export default function HrClient() {
     const [hasEdiData, setHasEdiData] = useState(false);
     const [showPayrollModal, setShowPayrollModal] = useState(false);
     const [showEdiModal, setShowEdiModal] = useState(false);
+    const [selectedStub, setSelectedStub] = useState<Employee | null>(null);
 
     const showNotif = (msg: string) => {
         setNotification(msg);
@@ -323,6 +324,9 @@ export default function HrClient() {
                                     {['이름', '직위', '기본급', '국민연금(-)', '건강보험(-)', '고용보험(-)', '실수령액'].map(h => (
                                         <th key={h} className="px-4 py-2 text-left text-xs font-semibold text-gray-600 border-r border-gray-200">{h}</th>
                                     ))}
+                                    {activeTab === '급여대장출력' && (
+                                        <th className="px-4 py-2 text-center text-xs font-semibold text-gray-600 border-r border-gray-200">명세서 관리</th>
+                                    )}
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
@@ -333,11 +337,36 @@ export default function HrClient() {
                                         <tr key={emp.id} className="hover:bg-gray-50">
                                             <td className="px-4 py-3 font-medium border-r border-gray-200">{emp.name}</td>
                                             <td className="px-4 py-3 text-gray-600 border-r border-gray-200">{emp.position}</td>
-                                            <td className="px-4 py-3 text-right font-medium border-r border-gray-200">{emp.baseSalary.toLocaleString()}</td>
+                                            <td className="px-4 py-3 text-right font-medium border-r border-gray-200">
+                                                {activeTab === '급여자료입력' ? (
+                                                    <input
+                                                        type="number"
+                                                        value={emp.baseSalary}
+                                                        onChange={(e) => {
+                                                            const newSalary = parseInt(e.target.value) || 0;
+                                                            setEmployees(prev => prev.map(p => p.id === emp.id ? { ...p, baseSalary: newSalary } : p));
+                                                        }}
+                                                        className="w-[100px] text-right border border-gray-300 rounded px-1 py-1 text-sm outline-none focus:border-indigo-500 bg-white"
+                                                    />
+                                                ) : (
+                                                    emp.baseSalary.toLocaleString()
+                                                )}
+                                            </td>
                                             <td className="px-4 py-3 text-right text-red-500 border-r border-gray-200">{ins.national.toLocaleString()}</td>
                                             <td className="px-4 py-3 text-right text-red-500 border-r border-gray-200">{ins.health.toLocaleString()}</td>
                                             <td className="px-4 py-3 text-right text-red-500 border-r border-gray-200">{ins.employment.toLocaleString()}</td>
                                             <td className="px-4 py-3 text-right font-bold text-green-600">{(emp.baseSalary - total).toLocaleString()}</td>
+                                            {activeTab === '급여대장출력' && (
+                                                <td className="px-4 py-3 text-center border-r border-gray-200">
+                                                    <button
+                                                        onClick={() => setSelectedStub(emp)}
+                                                        className="inline-flex items-center gap-1 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-2 py-1 rounded text-xs transition-colors"
+                                                    >
+                                                        <FileText className="w-3 h-3 text-blue-600" />
+                                                        명세서 보기
+                                                    </button>
+                                                </td>
+                                            )}
                                         </tr>
                                     );
                                 })}
@@ -347,6 +376,7 @@ export default function HrClient() {
                                     <td colSpan={2} className="px-4 py-2 font-bold">합 계</td>
                                     <td className="px-4 py-2 text-right font-bold">{employees.reduce((a, e) => a + e.baseSalary, 0).toLocaleString()}</td>
                                     <td colSpan={4}></td>
+                                    {activeTab === '급여대장출력' && <td></td>}
                                 </tr>
                             </tfoot>
                         </table>
@@ -402,7 +432,7 @@ export default function HrClient() {
                                         const noticeEmployer = employer + mockDiff;
 
                                         return (
-                                            <>
+                                            <Fragment key={emp.id}>
                                                 <tr key={emp.id + '_calc'} className="hover:bg-gray-50 border-b-0">
                                                     <td className="px-3 py-2 font-medium border-r border-gray-200 text-center" rowSpan={hasEdiData ? 3 : 1}>{emp.name}</td>
                                                     <td className="px-3 py-2 text-center border-r border-gray-200 bg-gray-50 text-gray-600 text-xs font-semibold">계산액</td>
@@ -435,7 +465,7 @@ export default function HrClient() {
                                                         <td className={`px-3 py-2 text-right font-bold ${isDiff ? 'text-red-500' : 'text-gray-500'}`}>{mockDiff}</td>
                                                     </tr>
                                                 )}
-                                            </>
+                                            </Fragment>
                                         );
                                     })}
                                 </tbody>
@@ -568,6 +598,132 @@ export default function HrClient() {
                                 showNotif('EDI 고지내역 연동 시뮬레이션이 완료되었습니다. (고지액 불일치 건 하이라이트 표시)');
                             }} className="flex-1 bg-indigo-600 text-white rounded-lg py-3 text-sm font-medium hover:bg-indigo-700 shadow-sm">
                                 인증서 로그인 및 자료 가져오기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {/* 개별 급여명세서 모달 */}
+            {selectedStub && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                    <div className="bg-white rounded-2xl p-6 shadow-2xl w-full max-w-[500px] border border-gray-100 max-h-[90vh] overflow-y-auto">
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-xl font-bold text-gray-900 border-b-2 border-indigo-600 pb-2 flex-1 mr-4">
+                                급여명세서 (2026년 2월 귀속)
+                            </h3>
+                            <button onClick={() => setSelectedStub(null)} className="text-gray-400 hover:text-gray-600 bg-gray-100 p-2 rounded-full transition-colors">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        <div className="bg-blue-50/50 rounded-xl p-4 mb-4 border border-blue-100">
+                            <div className="flex justify-between items-center mb-2">
+                                <span className="text-sm text-gray-600">성명</span>
+                                <span className="font-bold text-gray-900 text-lg">{selectedStub.name} <span className="text-sm font-normal text-gray-500">[{selectedStub.position}]</span></span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">지급일자</span>
+                                <span className="text-sm text-gray-800 font-medium">2026.02.25</span>
+                            </div>
+                        </div>
+
+                        <div className="border border-gray-200 rounded-lg overflow-hidden mb-4">
+                            <table className="w-full text-sm">
+                                <thead>
+                                    <tr>
+                                        <th className="bg-gray-100 py-2 px-3 text-left border-b border-r border-gray-200 w-1/2 font-semibold">지급 내역</th>
+                                        <th className="bg-gray-100 py-2 px-3 text-left border-b border-gray-200 w-1/2 font-semibold">공제 내역</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td className="p-3 border-r border-gray-200 align-top">
+                                            <div className="flex justify-between mb-2">
+                                                <span className="text-gray-600">기본급</span>
+                                                <span className="font-medium">{selectedStub.baseSalary.toLocaleString()}원</span>
+                                            </div>
+                                            <div className="flex justify-between text-gray-400">
+                                                <span>직책수당</span>
+                                                <span>0원</span>
+                                            </div>
+                                            <div className="flex justify-between text-gray-400 mt-2">
+                                                <span>식대(비과세)</span>
+                                                <span>0원</span>
+                                            </div>
+                                        </td>
+                                        <td className="p-3 align-top bg-red-50/20">
+                                            <div className="flex justify-between mb-2">
+                                                <span className="text-gray-600">국민연금</span>
+                                                <span className="font-medium text-red-600">{calcInsurance(selectedStub.baseSalary).national.toLocaleString()}원</span>
+                                            </div>
+                                            <div className="flex justify-between mb-2">
+                                                <span className="text-gray-600">건강보험</span>
+                                                <span className="font-medium text-red-600">{calcInsurance(selectedStub.baseSalary).health.toLocaleString()}원</span>
+                                            </div>
+                                            <div className="flex justify-between mb-2">
+                                                <span className="text-gray-600">장기요양</span>
+                                                <span className="font-medium text-red-600">{calcInsurance(selectedStub.baseSalary).longterm.toLocaleString()}원</span>
+                                            </div>
+                                            <div className="flex justify-between">
+                                                <span className="text-gray-600">고용보험</span>
+                                                <span className="font-medium text-red-600">{calcInsurance(selectedStub.baseSalary).employment.toLocaleString()}원</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr className="bg-gray-50 border-t border-gray-200 font-bold">
+                                        <td className="p-3 border-r border-gray-200 text-blue-800 flex justify-between">
+                                            <span>지급합계</span>
+                                            <span>{selectedStub.baseSalary.toLocaleString()}원</span>
+                                        </td>
+                                        <td className="p-3 text-red-700 flex justify-between">
+                                            <span>공제합계</span>
+                                            <span>{(
+                                                calcInsurance(selectedStub.baseSalary).national +
+                                                calcInsurance(selectedStub.baseSalary).health +
+                                                calcInsurance(selectedStub.baseSalary).longterm +
+                                                calcInsurance(selectedStub.baseSalary).employment
+                                            ).toLocaleString()}원</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div className="bg-green-50 rounded-xl p-5 mb-6 border border-green-100 flex justify-between items-center">
+                            <span className="font-bold text-gray-700">차인지급액 (실수령액)</span>
+                            <span className="text-2xl font-black text-green-700">
+                                {(
+                                    selectedStub.baseSalary - (
+                                        calcInsurance(selectedStub.baseSalary).national +
+                                        calcInsurance(selectedStub.baseSalary).health +
+                                        calcInsurance(selectedStub.baseSalary).longterm +
+                                        calcInsurance(selectedStub.baseSalary).employment
+                                    )
+                                ).toLocaleString()}
+                                <span className="text-base font-bold ml-1">원</span>
+                            </span>
+                        </div>
+
+                        <div className="flex justify-end pr-2 opacity-50 mb-6 relative">
+                            <div className="text-sm font-bold text-gray-500 mr-2 mt-2">○○ 유치원장</div>
+                            <div className="w-12 h-12 rounded-full border-2 border-red-500 text-red-500 flex justify-center items-center text-xs font-black absolute right-0 -top-2 transform rotate-[-15deg] opacity-70">
+                                (인)
+                            </div>
+                        </div>
+
+                        <div className="flex gap-2 pt-4 border-t border-gray-200">
+                            <button onClick={() => {
+                                showNotif(`${selectedStub.name} 선생님의 메일로 급여명세서 발송을 완료했습니다.`);
+                                setSelectedStub(null);
+                            }} className="flex-1 flex justify-center items-center gap-2 border border-blue-200 bg-blue-50 text-blue-700 rounded-lg py-3 text-sm hover:bg-blue-100 font-bold shadow-sm">
+                                <Mail className="w-4 h-4" />
+                                명세서 이메일 발송
+                            </button>
+                            <button onClick={() => {
+                                window.print();
+                            }} className="flex-1 flex justify-center items-center gap-2 bg-gray-800 text-white rounded-lg py-3 text-sm font-bold hover:bg-gray-900 shadow-sm">
+                                <Printer className="w-4 h-4" />
+                                인쇄하기
                             </button>
                         </div>
                     </div>

@@ -52,6 +52,7 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
     const [showCmsImport, setShowCmsImport] = useState(false);
     const [showAccountStatus, setShowAccountStatus] = useState(false);
     const [showClientManagement, setShowClientManagement] = useState(false);
+    const [showClientAdjustment, setShowClientAdjustment] = useState(false);
 
     // 거래처 임시 데이터
     const [clients, setClients] = useState([
@@ -227,9 +228,9 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
                         <div onClick={() => alert('회계검증은 준비 중입니다.')} className="text-white hover:bg-[#004885] px-4 py-1.5 cursor-pointer font-medium inline-flex items-center gap-1 text-[12px]">■ 회계검증</div>
                         <div onClick={() => router.push('/dashboard/budget')} className="text-white hover:bg-[#004885] px-4 py-1.5 cursor-pointer font-medium inline-flex items-center gap-1 text-[12px]">예산/결산</div>
                         <div onClick={() => router.push('/dashboard/hr')} className="text-white hover:bg-[#004885] px-4 py-1.5 cursor-pointer font-medium inline-flex items-center gap-1 text-[12px]">인사관리</div>
-                        <div onClick={() => alert('노무관리는 인사관리 모듈과 통합 구현중입니다.')} className="text-white hover:bg-[#004885] px-4 py-1.5 cursor-pointer font-medium inline-flex items-center gap-1 text-[12px]">노무관리</div>
+                        <div onClick={() => router.push('/dashboard/labor')} className="text-white hover:bg-[#004885] px-4 py-1.5 cursor-pointer font-medium inline-flex items-center gap-1 text-[12px]">노무관리</div>
                         <div onClick={() => router.push('/dashboard/settings')} className="text-white hover:bg-[#004885] px-4 py-1.5 cursor-pointer font-medium inline-flex items-center gap-1 text-[12px]">설정</div>
-                        <div onClick={() => alert('e키즈빌CMS 연동은 준비 중입니다.')} className="text-yellow-300 hover:bg-[#004885] px-4 py-1.5 cursor-pointer font-bold inline-flex items-center gap-1 ml-4 italic text-[12px]">e키즈빌CMS</div>
+                        <div onClick={() => router.push('/dashboard/cms')} className="text-yellow-300 hover:bg-[#004885] px-4 py-1.5 cursor-pointer font-bold inline-flex items-center gap-1 ml-4 italic text-[12px]">e키즈빌CMS</div>
                     </div>
 
                     <div className="p-2 bg-[#f8f9fa] flex flex-col gap-1">
@@ -252,7 +253,7 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
                             <button onClick={() => setShowClientManagement(true)} className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[80px] text-[12px]">거래처관리</button>
                             <button onClick={() => alert('준비 중인 기능입니다.')} className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[70px] text-[12px]">조정마감</button>
                             <button onClick={() => setShowPrevMonth(true)} className="border border-indigo-400 bg-indigo-50 text-indigo-800 hover:bg-indigo-100 px-2 py-1 font-medium min-w-[100px] text-[12px]">전월자료가져오기</button>
-                            <button onClick={() => alert('준비 중인 기능입니다.')} className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[80px] text-[12px]">거래처조정</button>
+                            <button onClick={() => setShowClientAdjustment(true)} className="border border-gray-400 bg-white hover:bg-blue-50 px-2 py-1 font-medium min-w-[80px] text-[12px]">거래처조정</button>
                             <button onClick={() => { if (confirm('전체 삭제하시겠습니까?')) setTransactions([]); }} className="border border-orange-500 bg-[#ffe5cc] text-orange-800 hover:bg-orange-200 px-2 py-1 font-bold min-w-[70px] text-center ml-auto text-[12px]">전체삭제</button>
                         </div>
                     </div>
@@ -724,6 +725,42 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
                         <div className="flex gap-2 mt-4">
                             <button onClick={() => setShowNewEntry(false)} className="flex-1 border border-gray-300 rounded py-1.5 text-[12px] hover:bg-gray-50">취소</button>
                             <button onClick={handleAddEntry} className="flex-1 bg-indigo-600 text-white rounded py-1.5 text-[12px] hover:bg-indigo-700">저장</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Client Adjustment Modal */}
+            {showClientAdjustment && (
+                <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
+                    <div className="bg-white rounded p-5 shadow-xl w-[450px]">
+                        <h3 className="font-bold mb-4 text-[#005ba6]">■ 거래처 일괄 조정</h3>
+                        <p className="text-[12px] text-gray-600 mb-4">선택한 거래 내역들의 거래처를 한 번에 일괄 변경합니다.</p>
+
+                        <div className="mb-4 bg-gray-50 p-3 border rounded text-[12px]">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="w-20 font-bold">대상 건수:</span>
+                                <span>3건 선택됨 (목업 데이터)</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="w-20 font-bold">변경할 거래처:</span>
+                                <select className="flex-1 border p-1 rounded" defaultValue="">
+                                    <option value="">변경할 거래처를 선택하세요</option>
+                                    {clients.map(c => (
+                                        <option key={c.id} value={c.name}>{c.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-2 justify-end">
+                            <button onClick={() => setShowClientAdjustment(false)} className="px-4 py-1.5 border rounded text-[12px] hover:bg-gray-100">취소</button>
+                            <button onClick={() => {
+                                alert('✅ 선택한 거래 내역의 거래처가 성공적으로 일괄 변경되었습니다!');
+                                setShowClientAdjustment(false);
+                            }} className="px-4 py-1.5 bg-[#005ba6] text-white text-[12px] rounded hover:bg-blue-700 font-bold">
+                                조정 적용
+                            </button>
                         </div>
                     </div>
                 </div>
