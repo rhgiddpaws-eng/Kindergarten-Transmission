@@ -1,4 +1,4 @@
-import LaborClient from '../../../../components/LaborClient';
+import LaborClient from '../../../components/LaborClient';
 
 export default function LaborPage() {
     return <LaborClient />;
