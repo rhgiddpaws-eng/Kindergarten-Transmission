@@ -261,7 +261,7 @@ export default function SettingsClient() {
                             <div className="text-gray-400 mb-2">시스템 정보</div>
                             <div className="text-green-400">버전: 유치원 ERP v1.0.0 (시뮬레이션 모드)</div>
                             <div className="text-gray-400">환경: Vercel Edge Runtime</div>
-                            <div className="text-gray-400">DB: 시뮬레이션 데이터 (in-memory)</div>
+                            <div className="text-gray-400">DB: 시뮬레이션 데이터 </div>
                             <div className="text-gray-400">빌드: {new Date().toLocaleDateString('ko-KR')}</div>
                         </div>
                     </div>
