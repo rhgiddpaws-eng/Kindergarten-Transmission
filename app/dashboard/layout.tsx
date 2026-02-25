@@ -45,7 +45,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="flex items-center gap-2 text-indigo-700 font-bold text-lg">
             <Building className="w-6 h-6" />
             <div>
-              <div className="text-base leading-tight">아이큐브</div>
+              <div className="text-base leading-tight">유치원-ERP</div>
               <div className="text-xs text-indigo-400 font-normal leading-tight">에듀파인 자동화</div>
             </div>
           </div>
@@ -112,7 +112,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </button>
           <div className="ml-3 flex items-center gap-2 text-indigo-700 font-bold text-lg">
             <Building className="w-5 h-5" />
-            <div className="leading-tight">아이큐브</div>
+            <div className="leading-tight">유치원-ERP</div>
           </div>
         </div>
 
