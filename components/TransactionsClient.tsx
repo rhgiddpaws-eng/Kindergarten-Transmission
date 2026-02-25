@@ -547,7 +547,7 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
                         <div className="flex gap-2 justify-end mt-4">
                             <button onClick={() => setShowExcelUpload(false)} className="px-4 py-2 border rounded hover:bg-gray-100">취소</button>
                             <button onClick={() => {
-                                const newTx = { id: Date.now().toString(), type: 'INCOME', date: '2026-02-28', amount: 500000, description: '엑셀업로드 수입(모의)', status: 'NORMAL', accountCode: accountCodes[0], journaled: false };
+                                const newTx = { id: Date.now().toString(), type: 'INCOME' as const, date: '2026-02-28', amount: 500000, description: '엑셀업로드 수입(모의)', status: 'NORMAL', accountCode: accountCodes[0], journaled: false };
                                 setTransactions(prev => [...prev, newTx]);
                                 alert('엑셀 데이터가 성공적으로 처리되었습니다.');
                                 setShowExcelUpload(false);
@@ -568,7 +568,7 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
                         <div className="flex gap-2 justify-end">
                             <button onClick={() => setShowCmsImport(false)} className="px-4 py-2 border rounded text-sm hover:bg-gray-100">닫기</button>
                             <button onClick={() => {
-                                const newTx = { id: Date.now().toString(), type: 'INCOME', date: '2026-02-28', amount: 120000, description: 'CMS 승인건(모의)', status: 'NORMAL', accountCode: accountCodes[0], journaled: false, clientName: 'CMS결제' };
+                                const newTx = { id: Date.now().toString(), type: 'INCOME' as const, date: '2026-02-28', amount: 120000, description: 'CMS 승인건(모의)', status: 'NORMAL', accountCode: accountCodes[0], journaled: false, clientName: 'CMS결제' };
                                 setTransactions(prev => [...prev, newTx]);
                                 alert('CMS 자료를 성공적으로 불러왔습니다.');
                                 setShowCmsImport(false);

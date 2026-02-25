@@ -7,7 +7,7 @@ import { Download, Plus, BarChart2, TrendingUp, TrendingDown, X, CheckCircle2 } 
 type Tab = '본예산' | '추경예산' | '예산현황 및 통계' | '세입세출결산서' | '세입세출예산서' | '공시관련' | '설정';
 
 export default function BudgetClient() {
-    const [activeTab, setActiveTab] = useState<Tab>('예산현황');
+    const [activeTab, setActiveTab] = useState<Tab>('예산현황 및 통계');
     const [budgetItems, setBudgetItems] = useState<BudgetItem[]>(MOCK_BUDGET_ITEMS);
     const [showEdit, setShowEdit] = useState<BudgetItem | null>(null);
     const [editBudget, setEditBudget] = useState('');

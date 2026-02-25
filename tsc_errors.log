@@ -1,0 +1,20 @@
+components/BudgetClient.tsx(10,53): error TS2345: Argument of type '"예산현황"' is not assignable to parameter of type 'Tab | (() => Tab)'.
+components/HRClient.tsx(37,42): error TS2345: Argument of type 'null' is not assignable to parameter of type 'SetStateAction<string>'.
+components/modals/ExcelUploadModal.tsx(3,23): error TS2307: Cannot find module 'xlsx' or its corresponding type declarations.
+components/TransactionsClient.tsx(551,49): error TS2345: Argument of type '(prev: Transaction[]) => (Transaction | { id: string; type: string; date: string; amount: number; description: string; status: string; accountCode: AccountCode; journaled: boolean; })[]' is not assignable to parameter of type 'SetStateAction<Transaction[]>'.
+  Type '(prev: Transaction[]) => (Transaction | { id: string; type: string; date: string; amount: number; description: string; status: string; accountCode: AccountCode; journaled: boolean; })[]' is not assignable to type '(prevState: Transaction[]) => Transaction[]'.
+    Type '(Transaction | { id: string; type: string; date: string; amount: number; description: string; status: string; accountCode: AccountCode; journaled: boolean; })[]' is not assignable to type 'Transaction[]'.
+      Type 'Transaction | { id: string; type: string; date: string; amount: number; description: string; status: string; accountCode: AccountCode; journaled: boolean; }' is not assignable to type 'Transaction'.
+        Type '{ id: string; type: string; date: string; amount: number; description: string; status: string; accountCode: AccountCode; journaled: boolean; }' is not assignable to type 'Transaction'.
+          Types of property 'type' are incompatible.
+            Type 'string' is not assignable to type '"INCOME" | "EXPENSE"'.
+components/TransactionsClient.tsx(572,49): error TS2345: Argument of type '(prev: Transaction[]) => (Transaction | { id: string; type: string; date: string; amount: number; description: string; status: string; accountCode: AccountCode; journaled: boolean; clientName: string; })[]' is not assignable to parameter of type 'SetStateAction<Transaction[]>'.
+  Type '(prev: Transaction[]) => (Transaction | { id: string; type: string; date: string; amount: number; description: string; status: string; accountCode: AccountCode; journaled: boolean; clientName: string; })[]' is not assignable to type '(prevState: Transaction[]) => Transaction[]'.
+    Type '(Transaction | { id: string; type: string; date: string; amount: number; description: string; status: string; accountCode: AccountCode; journaled: boolean; clientName: string; })[]' is not assignable to type 'Transaction[]'.
+      Type 'Transaction | { id: string; type: string; date: string; amount: number; description: string; status: string; accountCode: AccountCode; journaled: boolean; clientName: string; }' is not assignable to type 'Transaction'.
+        Type '{ id: string; type: string; date: string; amount: number; description: string; status: string; accountCode: AccountCode; journaled: boolean; clientName: string; }' is not assignable to type 'Transaction'.
+          Types of property 'type' are incompatible.
+            Type 'string' is not assignable to type '"INCOME" | "EXPENSE"'.
+lib/edufine-rpa.ts(1,26): error TS2307: Cannot find module 'playwright' or its corresponding type declarations.
+lib/edufine-rpa.ts(2,30): error TS2307: Cannot find module '@prisma/client' or its corresponding type declarations.
+lib/scraper.ts(1,26): error TS2307: Cannot find module 'playwright' or its corresponding type declarations.

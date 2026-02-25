@@ -34,7 +34,7 @@ export default function HrClient() {
 
     const showNotif = (msg: string) => {
         setNotification(msg);
-        setTimeout(() => setNotification(null), 3000);
+        setTimeout(() => setNotification(''), 3000);
     };
 
     const handleAdd = () => {
