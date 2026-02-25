@@ -263,105 +263,105 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
             {/* Data Table */}
             <div className="flex-1 overflow-auto border-t-2 border-b-2 border-[#00a9ba]">
                 <div className="overflow-x-auto">
-                <table className="whitespace-nowrap min-w-full border-collapse" style={{ tableLayout: 'fixed' }}>
-                    <thead className="bg-[#00a9ba] text-white sticky top-0 z-10">
-                        <tr>
-                            <th className="border-r border-b border-[#0d7382] w-[30px] p-1 text-center font-normal"><input type="checkbox" className="w-[11px] h-[11px]" /></th>
-                            <th className="border-r border-b border-[#0d7382] w-[35px] p-1 text-center font-normal">NO</th>
-                            <th className="border-r border-b border-[#0d7382] w-[50px] p-1 text-center font-normal">구분</th>
-                            <th className="border-r border-b border-[#0d7382] w-[80px] p-1 text-center font-normal">발의일자</th>
-                            <th className="border-r border-b border-[#0d7382] w-[80px] p-1 text-center font-normal">거래일자</th>
-                            <th className="border-r border-b border-[#0d7382] w-[45px] p-1 text-center font-normal">코드</th>
-                            <th className="border-r border-b border-[#0d7382] w-[100px] p-1 text-center font-normal">계정</th>
-                            <th className="border-r border-b border-[#0d7382] w-[40px] p-1 text-center font-normal">과세</th>
-                            <th className="border-r border-b border-[#0d7382] min-w-[150px] p-1 text-center font-normal">적요</th>
-                            <th className="border-r border-b border-[#0d7382] w-[90px] p-1 text-center font-normal">수입</th>
-                            <th className="border-r border-b border-[#0d7382] w-[90px] p-1 text-center font-normal">지출</th>
-                            <th className="border-r border-b border-[#0d7382] w-[100px] p-1 text-center font-normal">잔액</th>
-                            <th className="border-r border-b border-[#0d7382] w-[80px] p-1 text-center font-normal">거래처</th>
-                            <th className="border-r border-b border-[#0d7382] w-[50px] p-1 text-center font-normal">전송</th>
-                            <th className="border-r border-b border-[#0d7382] w-[45px] p-1 text-center font-normal">분개</th>
-                            <th className="border-r border-b border-[#0d7382] w-[40px] p-1 text-center font-normal">삭제</th>
-                        </tr>
-                        {/* Filter Row */}
-                        <tr className="bg-[#e4eff1] text-gray-800 border-b border-[#0d7382]">
-                            <th className="border-r border-gray-300 p-0 text-center font-normal text-rose-600 bg-[#fceceb]">0</th>
-                            <th className="border-r border-gray-300 p-1 text-center font-normal bg-white text-[10px] text-gray-500">↻</th>
-                            <th className="border-r border-gray-300 p-0 font-normal bg-white">
-                                <select className="w-full text-[11px] border-0 bg-transparent focus:outline-none">
-                                    <option>전체</option><option>수입</option><option>지출</option>
-                                </select>
-                            </th>
-                            <th className="border-r border-gray-300 p-0 bg-gray-100 font-normal" colSpan={2}></th>
-                            <th className="border-r border-gray-300 p-0 bg-gray-100 font-normal"></th>
-                            <th className="border-r border-gray-300 p-0 bg-white font-normal">
-                                <select className="w-full text-[11px] border-0 bg-transparent focus:outline-none text-red-500">
-                                    <option>목선택</option>
-                                    {accountCodes.map(ac => <option key={ac.id} value={ac.id}>{ac.name}</option>)}
-                                </select>
-                            </th>
-                            <th className="border-r border-gray-300 p-0 bg-gray-100 font-normal"></th>
-                            <th className="border-r border-gray-300 p-0 bg-white font-normal">
-                                <input type="text" placeholder="적요 검색" value={searchDesc} onChange={e => setSearchDesc(e.target.value)} className="w-full text-[11px] border-0 bg-transparent focus:outline-none placeholder-gray-400 px-1" />
-                            </th>
-                            <th className="border-r border-gray-300 p-0 bg-gray-100 font-normal" colSpan={3}></th>
-                            <th className="border-r border-gray-300 p-0 bg-gray-100 font-normal"></th>
-                            <th className="border-r border-gray-300 p-0 bg-gray-100 font-normal"></th>
-                            <th className="border-r border-gray-300 p-0 bg-[#e6f2eb] font-normal">
-                                <div onClick={handleSearch} className="bg-[#339933] text-white text-[10px] m-0.5 rounded-[2px] cursor-pointer text-center py-0.5">검색</div>
-                            </th>
-                            <th className="border-r border-gray-300 p-0 bg-gray-100 font-normal"></th>
-                        </tr>
-                    </thead>
-                    <tbody className="bg-white">
-                        {filteredTx.map((t, idx) => (
-                            <tr key={t.id} className="hover:bg-blue-50 border-b border-gray-100">
-                                <td className="border-r border-gray-200 p-0.5 text-center"><input type="checkbox" className="w-[11px] h-[11px]" /></td>
-                                <td className="border-r border-gray-200 p-0.5 text-center text-gray-600">{idx + 1}</td>
-                                <td className={`border-r border-gray-200 p-0.5 text-center font-bold ${t.type === 'INCOME' ? 'text-blue-600' : 'text-red-600'}`}>
-                                    {t.type === 'INCOME' ? '수입' : '지출'}
-                                </td>
-                                <td className="border-r border-gray-200 p-0.5 text-center text-gray-600 text-[11px]">{t.date}</td>
-                                <td className="border-r border-gray-200 p-0.5 text-center text-gray-600 text-[11px]">{t.date}</td>
-                                <td className="border-r border-gray-200 p-0.5 text-center text-gray-600">{t.accountCode?.code}</td>
-                                <td className={`border-r border-gray-200 p-0.5 text-left px-1 ${t.journaled ? 'text-gray-700' : 'text-red-500'}`}>{t.accountCode?.name || '미정'}</td>
-                                <td className="border-r border-gray-200 p-0.5 text-center"><input type="checkbox" className="w-[11px] h-[11px]" /></td>
-                                <td className="border-r border-gray-200 p-0.5 text-left truncate px-1">{t.description}</td>
-                                <td className="border-r border-gray-200 p-0.5 text-right text-blue-600 pr-2">
-                                    {t.type === 'INCOME' ? t.amount.toLocaleString() : ''}
-                                </td>
-                                <td className="border-r border-gray-200 p-0.5 text-right text-red-600 pr-2">
-                                    {t.type === 'EXPENSE' ? t.amount.toLocaleString() : ''}
-                                </td>
-                                <td className="border-r border-gray-200 p-0.5 text-right text-gray-700 pr-2 font-medium">
-                                    {t.balance ? t.balance.toLocaleString() : '-'}
-                                </td>
-                                <td className="border-r border-gray-200 p-0.5 text-left truncate px-1 text-[11px] text-gray-500">{t.clientName || '-'}</td>
-                                <td className="border-r border-gray-200 p-0.5 text-center">
-                                    {t.status === 'TRANSMITTED' && <span className="bg-green-500 text-white text-[10px] px-1 py-0.5 rounded-[2px]">완</span>}
-                                    {t.status === 'PENDING' && <span className="bg-gray-400 text-white text-[10px] px-1 py-0.5 rounded-[2px]">대기</span>}
-                                </td>
-                                <td className="border-r border-gray-200 p-0.5 text-center">
-                                    {t.journaled
-                                        ? <button className="bg-green-500 text-white text-[10px] px-1.5 py-0.5 rounded-[2px]">완</button>
-                                        : <button onClick={() => handleJournal(t)} className="bg-[#2c98b6] text-white text-[10px] px-1.5 py-0.5 rounded-[2px] hover:bg-[#1a7a96]">분개</button>
-                                    }
-                                </td>
-                                <td className="border-r border-gray-200 p-0.5 text-center">
-                                    <button onClick={() => handleDelete(t.id)} className="bg-[#e45b6c] text-white text-[10px] px-1 py-0.5 rounded-[2px] hover:bg-red-600">×</button>
-                                </td>
+                    <table className="whitespace-nowrap min-w-full border-collapse" style={{ tableLayout: 'fixed' }}>
+                        <thead className="bg-[#00a9ba] text-white sticky top-0 z-10">
+                            <tr>
+                                <th className="border-r border-b border-[#0d7382] w-[30px] p-1 text-center font-normal"><input type="checkbox" className="w-[11px] h-[11px]" /></th>
+                                <th className="border-r border-b border-[#0d7382] w-[35px] p-1 text-center font-normal">NO</th>
+                                <th className="border-r border-b border-[#0d7382] w-[50px] p-1 text-center font-normal">구분</th>
+                                <th className="border-r border-b border-[#0d7382] w-[80px] p-1 text-center font-normal">발의일자</th>
+                                <th className="border-r border-b border-[#0d7382] w-[80px] p-1 text-center font-normal">거래일자</th>
+                                <th className="border-r border-b border-[#0d7382] w-[45px] p-1 text-center font-normal">코드</th>
+                                <th className="border-r border-b border-[#0d7382] w-[100px] p-1 text-center font-normal">계정</th>
+                                <th className="border-r border-b border-[#0d7382] w-[40px] p-1 text-center font-normal">과세</th>
+                                <th className="border-r border-b border-[#0d7382] min-w-[150px] p-1 text-center font-normal">적요</th>
+                                <th className="border-r border-b border-[#0d7382] w-[90px] p-1 text-center font-normal">수입</th>
+                                <th className="border-r border-b border-[#0d7382] w-[90px] p-1 text-center font-normal">지출</th>
+                                <th className="border-r border-b border-[#0d7382] w-[100px] p-1 text-center font-normal">잔액</th>
+                                <th className="border-r border-b border-[#0d7382] w-[80px] p-1 text-center font-normal">거래처</th>
+                                <th className="border-r border-b border-[#0d7382] w-[50px] p-1 text-center font-normal">전송</th>
+                                <th className="border-r border-b border-[#0d7382] w-[45px] p-1 text-center font-normal">분개</th>
+                                <th className="border-r border-b border-[#0d7382] w-[40px] p-1 text-center font-normal">삭제</th>
                             </tr>
-                        ))}
-                        {/* Empty rows */}
-                        {Array.from({ length: Math.max(0, 10 - filteredTx.length) }).map((_, i) => (
-                            <tr key={`e${i}`} className="border-b border-gray-50">
-                                {Array.from({ length: 16 }).map((_, j) => (
-                                    <td key={j} className="border-r border-gray-100 p-0.5 h-6"></td>
-                                ))}
+                            {/* Filter Row */}
+                            <tr className="bg-[#e4eff1] text-gray-800 border-b border-[#0d7382]">
+                                <th className="border-r border-gray-300 p-0 text-center font-normal text-rose-600 bg-[#fceceb]">0</th>
+                                <th className="border-r border-gray-300 p-1 text-center font-normal bg-white text-[10px] text-gray-500">↻</th>
+                                <th className="border-r border-gray-300 p-0 font-normal bg-white">
+                                    <select className="w-full text-[11px] border-0 bg-transparent focus:outline-none">
+                                        <option>전체</option><option>수입</option><option>지출</option>
+                                    </select>
+                                </th>
+                                <th className="border-r border-gray-300 p-0 bg-gray-100 font-normal" colSpan={2}></th>
+                                <th className="border-r border-gray-300 p-0 bg-gray-100 font-normal"></th>
+                                <th className="border-r border-gray-300 p-0 bg-white font-normal">
+                                    <select className="w-full text-[11px] border-0 bg-transparent focus:outline-none text-red-500">
+                                        <option>목선택</option>
+                                        {accountCodes.map(ac => <option key={ac.id} value={ac.id}>{ac.name}</option>)}
+                                    </select>
+                                </th>
+                                <th className="border-r border-gray-300 p-0 bg-gray-100 font-normal"></th>
+                                <th className="border-r border-gray-300 p-0 bg-white font-normal">
+                                    <input type="text" placeholder="적요 검색" value={searchDesc} onChange={e => setSearchDesc(e.target.value)} className="w-full text-[11px] border-0 bg-transparent focus:outline-none placeholder-gray-400 px-1" />
+                                </th>
+                                <th className="border-r border-gray-300 p-0 bg-gray-100 font-normal" colSpan={3}></th>
+                                <th className="border-r border-gray-300 p-0 bg-gray-100 font-normal"></th>
+                                <th className="border-r border-gray-300 p-0 bg-gray-100 font-normal"></th>
+                                <th className="border-r border-gray-300 p-0 bg-[#e6f2eb] font-normal">
+                                    <div onClick={handleSearch} className="bg-[#339933] text-white text-[10px] m-0.5 rounded-[2px] cursor-pointer text-center py-0.5">검색</div>
+                                </th>
+                                <th className="border-r border-gray-300 p-0 bg-gray-100 font-normal"></th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody className="bg-white">
+                            {filteredTx.map((t, idx) => (
+                                <tr key={t.id} className="hover:bg-blue-50 border-b border-gray-100">
+                                    <td className="border-r border-gray-200 p-0.5 text-center"><input type="checkbox" className="w-[11px] h-[11px]" /></td>
+                                    <td className="border-r border-gray-200 p-0.5 text-center text-gray-600">{idx + 1}</td>
+                                    <td className={`border-r border-gray-200 p-0.5 text-center font-bold ${t.type === 'INCOME' ? 'text-blue-600' : 'text-red-600'}`}>
+                                        {t.type === 'INCOME' ? '수입' : '지출'}
+                                    </td>
+                                    <td className="border-r border-gray-200 p-0.5 text-center text-gray-600 text-[11px]">{t.date}</td>
+                                    <td className="border-r border-gray-200 p-0.5 text-center text-gray-600 text-[11px]">{t.date}</td>
+                                    <td className="border-r border-gray-200 p-0.5 text-center text-gray-600">{t.accountCode?.code}</td>
+                                    <td className={`border-r border-gray-200 p-0.5 text-left px-1 ${t.journaled ? 'text-gray-700' : 'text-red-500'}`}>{t.accountCode?.name || '미정'}</td>
+                                    <td className="border-r border-gray-200 p-0.5 text-center"><input type="checkbox" className="w-[11px] h-[11px]" /></td>
+                                    <td className="border-r border-gray-200 p-0.5 text-left truncate px-1">{t.description}</td>
+                                    <td className="border-r border-gray-200 p-0.5 text-right text-blue-600 pr-2">
+                                        {t.type === 'INCOME' ? t.amount.toLocaleString() : ''}
+                                    </td>
+                                    <td className="border-r border-gray-200 p-0.5 text-right text-red-600 pr-2">
+                                        {t.type === 'EXPENSE' ? t.amount.toLocaleString() : ''}
+                                    </td>
+                                    <td className="border-r border-gray-200 p-0.5 text-right text-gray-700 pr-2 font-medium">
+                                        {t.balance ? t.balance.toLocaleString() : '-'}
+                                    </td>
+                                    <td className="border-r border-gray-200 p-0.5 text-left truncate px-1 text-[11px] text-gray-500">{t.clientName || '-'}</td>
+                                    <td className="border-r border-gray-200 p-0.5 text-center">
+                                        {t.status === 'TRANSMITTED' && <span className="bg-green-500 text-white text-[10px] px-1 py-0.5 rounded-[2px]">완</span>}
+                                        {t.status === 'PENDING' && <span className="bg-gray-400 text-white text-[10px] px-1 py-0.5 rounded-[2px]">대기</span>}
+                                    </td>
+                                    <td className="border-r border-gray-200 p-0.5 text-center">
+                                        {t.journaled
+                                            ? <button className="bg-green-500 text-white text-[10px] px-1.5 py-0.5 rounded-[2px]">완</button>
+                                            : <button onClick={() => handleJournal(t)} className="bg-[#2c98b6] text-white text-[10px] px-1.5 py-0.5 rounded-[2px] hover:bg-[#1a7a96]">분개</button>
+                                        }
+                                    </td>
+                                    <td className="border-r border-gray-200 p-0.5 text-center">
+                                        <button onClick={() => handleDelete(t.id)} className="bg-[#e45b6c] text-white text-[10px] px-1 py-0.5 rounded-[2px] hover:bg-red-600">×</button>
+                                    </td>
+                                </tr>
+                            ))}
+                            {/* Empty rows */}
+                            {Array.from({ length: Math.max(0, 10 - filteredTx.length) }).map((_, i) => (
+                                <tr key={`e${i}`} className="border-b border-gray-50">
+                                    {Array.from({ length: 16 }).map((_, j) => (
+                                        <td key={j} className="border-r border-gray-100 p-0.5 h-6"></td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -384,7 +384,7 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
                     <div className="w-[140px] flex flex-col">
                         <div className="bg-[#dcdcdc] text-gray-700 text-center font-bold text-[11px] py-0.5 border-b border-gray-300">검 증</div>
                         <div className="flex-1 flex items-center justify-center p-1 bg-[#f5f5f5]">
-                            <button onClick={() => alert('✅ 현금출납부 잔액과 통장 잔액이 일치합니다!\n(목업 확인)')} className="border border-red-500 text-red-500 font-bold text-[10px] w-full h-full hover:bg-red-50">현금출납부-통장 잔액 확인</button>
+                            <button onClick={() => alert('✅ 현금출납부 잔액과 통장 잔액이 일치합니다!\n(시뮬레이션 확인)')} className="border border-red-500 text-red-500 font-bold text-[10px] w-full h-full hover:bg-red-50">현금출납부-통장 잔액 확인</button>
                         </div>
                     </div>
                 </div>
@@ -430,36 +430,36 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
                             은행 계좌 현황에서 거래 내역을 현금출납부로 가져옵니다.
                         </div>
                         <div className="overflow-x-auto">
-                        <table className="whitespace-nowrap min-w-full text-[12px] border border-gray-200 mb-3">
-                            <thead className="bg-[#b3d4e6] text-[#003366]">
-                                <tr>
-                                    <th className="p-1.5 text-left border-r border-gray-200">은행명</th>
-                                    <th className="p-1.5 text-center border-r border-gray-200">자료복구</th>
-                                    <th className="p-1.5 text-center">계좌번호</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr className="border-t border-gray-200">
-                                    <td className="p-1.5 border-r border-gray-200">농협중앙회</td>
-                                    <td className="p-1.5 border-r border-gray-200 text-center">
-                                        <button onClick={() => { alert('✅ 2월 전체 거래내역 복구 완료! (목업)'); }} className="bg-blue-500 text-white text-[10px] px-2 py-0.5 rounded">2월 전체복구</button>
-                                    </td>
-                                    <td className="p-1.5 text-center font-mono text-[11px]">352-0611-****-**</td>
-                                </tr>
-                                <tr className="border-t border-gray-200">
-                                    <td className="p-1.5 border-r border-gray-200">국민은행</td>
-                                    <td className="p-1.5 border-r border-gray-200 text-center">
-                                        <button onClick={() => { alert('✅ 2월 전체 거래내역 복구 완료! (목업)'); }} className="bg-blue-500 text-white text-[10px] px-2 py-0.5 rounded">2월 전체복구</button>
-                                    </td>
-                                    <td className="p-1.5 text-center font-mono text-[11px]">123-456-***-***</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                            <table className="whitespace-nowrap min-w-full text-[12px] border border-gray-200 mb-3">
+                                <thead className="bg-[#b3d4e6] text-[#003366]">
+                                    <tr>
+                                        <th className="p-1.5 text-left border-r border-gray-200">은행명</th>
+                                        <th className="p-1.5 text-center border-r border-gray-200">자료복구</th>
+                                        <th className="p-1.5 text-center">계좌번호</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr className="border-t border-gray-200">
+                                        <td className="p-1.5 border-r border-gray-200">농협중앙회</td>
+                                        <td className="p-1.5 border-r border-gray-200 text-center">
+                                            <button onClick={() => { alert('✅ 2월 전체 거래내역 복구 완료! (시뮬레이션)'); }} className="bg-blue-500 text-white text-[10px] px-2 py-0.5 rounded">2월 전체복구</button>
+                                        </td>
+                                        <td className="p-1.5 text-center font-mono text-[11px]">352-0611-****-**</td>
+                                    </tr>
+                                    <tr className="border-t border-gray-200">
+                                        <td className="p-1.5 border-r border-gray-200">국민은행</td>
+                                        <td className="p-1.5 border-r border-gray-200 text-center">
+                                            <button onClick={() => { alert('✅ 2월 전체 거래내역 복구 완료! (시뮬레이션)'); }} className="bg-blue-500 text-white text-[10px] px-2 py-0.5 rounded">2월 전체복구</button>
+                                        </td>
+                                        <td className="p-1.5 text-center font-mono text-[11px]">123-456-***-***</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                         <div className="flex gap-2">
                             <button onClick={() => setShowAccountImport(false)} className="flex-1 border border-gray-300 rounded py-1.5 text-[12px] hover:bg-gray-50">닫기</button>
                             <button onClick={() => {
-                                alert('✅ 즉시조회 완료! 최신 거래내역이 반영됩니다. (목업)');
+                                alert('✅ 즉시조회 완료! 최신 거래내역이 반영됩니다. (시뮬레이션)');
                                 setShowAccountImport(false);
                             }} className="flex-1 bg-indigo-600 text-white rounded py-1.5 text-[12px] hover:bg-indigo-700">즉시조회</button>
                         </div>
@@ -477,45 +477,45 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
                             <div className="flex justify-between"><span>원금액:</span><strong>850,000원</strong></div>
                         </div>
                         <div className="overflow-x-auto">
-                        <table className="whitespace-nowrap min-w-full text-[12px] border border-gray-200 mb-3">
-                            <thead className="bg-[#00a9ba] text-white">
-                                <tr>
-                                    <th className="p-1.5 text-center border-r border-white/30">계정과목</th>
-                                    <th className="p-1.5 text-center border-r border-white/30">금액</th>
-                                    <th className="p-1.5 text-center">적요</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {[
-                                    { ac: '원비 수입', amt: '700,000', memo: '수업료' },
-                                    { ac: '급식비 수입', amt: '100,000', memo: '급식비' },
-                                    { ac: '특별활동비 수입', amt: '50,000', memo: '특별활동비' },
-                                ].map((row, i) => (
-                                    <tr key={i} className="border-t border-gray-200">
-                                        <td className="p-1 border-r border-gray-200">
-                                            <select className="w-full border-0 bg-transparent text-[11px]" defaultValue={row.ac}>
-                                                {accountCodes.filter(ac => ac.type === 'INCOME').map(ac => (
-                                                    <option key={ac.id} value={ac.name}>{ac.name}</option>
-                                                ))}
-                                            </select>
-                                        </td>
-                                        <td className="p-1 border-r border-gray-200">
-                                            <input defaultValue={row.amt} className="w-full border-0 bg-transparent text-right text-[11px]" />
-                                        </td>
-                                        <td className="p-1">
-                                            <input defaultValue={row.memo} className="w-full border-0 bg-transparent text-[11px]" />
-                                        </td>
+                            <table className="whitespace-nowrap min-w-full text-[12px] border border-gray-200 mb-3">
+                                <thead className="bg-[#00a9ba] text-white">
+                                    <tr>
+                                        <th className="p-1.5 text-center border-r border-white/30">계정과목</th>
+                                        <th className="p-1.5 text-center border-r border-white/30">금액</th>
+                                        <th className="p-1.5 text-center">적요</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                            <tfoot>
-                                <tr className="bg-gray-50 border-t border-gray-200">
-                                    <td className="p-1.5 font-bold text-right border-r border-gray-200">합계</td>
-                                    <td className="p-1.5 font-bold text-right border-r border-gray-200 text-blue-600">850,000원</td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {[
+                                        { ac: '원비 수입', amt: '700,000', memo: '수업료' },
+                                        { ac: '급식비 수입', amt: '100,000', memo: '급식비' },
+                                        { ac: '특별활동비 수입', amt: '50,000', memo: '특별활동비' },
+                                    ].map((row, i) => (
+                                        <tr key={i} className="border-t border-gray-200">
+                                            <td className="p-1 border-r border-gray-200">
+                                                <select className="w-full border-0 bg-transparent text-[11px]" defaultValue={row.ac}>
+                                                    {accountCodes.filter(ac => ac.type === 'INCOME').map(ac => (
+                                                        <option key={ac.id} value={ac.name}>{ac.name}</option>
+                                                    ))}
+                                                </select>
+                                            </td>
+                                            <td className="p-1 border-r border-gray-200">
+                                                <input defaultValue={row.amt} className="w-full border-0 bg-transparent text-right text-[11px]" />
+                                            </td>
+                                            <td className="p-1">
+                                                <input defaultValue={row.memo} className="w-full border-0 bg-transparent text-[11px]" />
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                                <tfoot>
+                                    <tr className="bg-gray-50 border-t border-gray-200">
+                                        <td className="p-1.5 font-bold text-right border-r border-gray-200">합계</td>
+                                        <td className="p-1.5 font-bold text-right border-r border-gray-200 text-blue-600">850,000원</td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
                         <div className="flex gap-2">
                             <button onClick={() => setShowMultiJournal(false)} className="flex-1 border border-gray-300 rounded py-1.5 text-[12px] hover:bg-gray-50">취소</button>
@@ -595,15 +595,15 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
                             <button onClick={() => setShowAccountStatus(false)} className="text-gray-500 hover:text-gray-800">✖</button>
                         </div>
                         <div className="overflow-x-auto">
-                        <table className="whitespace-nowrap min-w-full text-sm border">
-                            <thead className="bg-gray-100">
-                                <tr><th className="border p-2">은행명</th><th className="border p-2">계좌번호</th><th className="border p-2">잔액 (원)</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr><td className="border p-2 text-center">농협은행</td><td className="border p-2 text-center">123-4567-8901-23</td><td className="border p-2 text-right font-bold text-blue-600">8,500,000</td></tr>
-                                <tr><td className="border p-2 text-center">신한은행</td><td className="border p-2 text-center">110-123-456789</td><td className="border p-2 text-right font-bold text-blue-600">12,400,000</td></tr>
-                            </tbody>
-                        </table>
+                            <table className="whitespace-nowrap min-w-full text-sm border">
+                                <thead className="bg-gray-100">
+                                    <tr><th className="border p-2">은행명</th><th className="border p-2">계좌번호</th><th className="border p-2">잔액 (원)</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td className="border p-2 text-center">농협은행</td><td className="border p-2 text-center">123-4567-8901-23</td><td className="border p-2 text-right font-bold text-blue-600">8,500,000</td></tr>
+                                    <tr><td className="border p-2 text-center">신한은행</td><td className="border p-2 text-center">110-123-456789</td><td className="border p-2 text-right font-bold text-blue-600">12,400,000</td></tr>
+                                </tbody>
+                            </table>
                         </div>
                         <div className="text-right mt-4">
                             <button onClick={() => setShowAccountStatus(false)} className="px-4 py-2 bg-gray-200 rounded text-sm hover:bg-gray-300">닫기</button>
@@ -630,23 +630,23 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
                             }} className="bg-[#005ba6] text-white px-3 py-1.5 text-sm rounded">추가</button>
                         </div>
                         <div className="overflow-x-auto">
-                        <table className="whitespace-nowrap min-w-full text-sm border">
-                            <thead className="bg-gray-100">
-                                <tr><th className="border p-2 w-[50px]">ID</th><th className="border p-2">거래처명</th><th className="border p-2 w-[120px]">사업자번호</th><th className="border p-2 w-[60px]">비고</th></tr>
-                            </thead>
-                            <tbody>
-                                {clients.map(c => (
-                                    <tr key={c.id}>
-                                        <td className="border p-2 text-center">{c.id}</td>
-                                        <td className="border p-2 pl-3 font-medium">{c.name}</td>
-                                        <td className="border p-2 text-center text-gray-600">{c.businessNumber}</td>
-                                        <td className="border p-2 text-center">
-                                            <button onClick={() => setClients(clients.filter(client => client.id !== c.id))} className="text-red-600 hover:underline text-xs">삭제</button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                            <table className="whitespace-nowrap min-w-full text-sm border">
+                                <thead className="bg-gray-100">
+                                    <tr><th className="border p-2 w-[50px]">ID</th><th className="border p-2">거래처명</th><th className="border p-2 w-[120px]">사업자번호</th><th className="border p-2 w-[60px]">비고</th></tr>
+                                </thead>
+                                <tbody>
+                                    {clients.map(c => (
+                                        <tr key={c.id}>
+                                            <td className="border p-2 text-center">{c.id}</td>
+                                            <td className="border p-2 pl-3 font-medium">{c.name}</td>
+                                            <td className="border p-2 text-center text-gray-600">{c.businessNumber}</td>
+                                            <td className="border p-2 text-center">
+                                                <button onClick={() => setClients(clients.filter(client => client.id !== c.id))} className="text-red-600 hover:underline text-xs">삭제</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
                         <div className="text-right mt-4">
                             <button onClick={() => setShowClientManagement(false)} className="px-4 py-2 bg-gray-200 rounded text-sm hover:bg-gray-300">확인완료</button>
@@ -750,7 +750,7 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
                         <div className="mb-4 bg-gray-50 p-3 border rounded text-[12px]">
                             <div className="flex items-center gap-2 mb-2">
                                 <span className="w-20 font-bold">대상 건수:</span>
-                                <span>3건 선택됨 (목업 데이터)</span>
+                                <span>3건 선택됨 (시뮬레이션 데이터)</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <span className="w-20 font-bold">변경할 거래처:</span>

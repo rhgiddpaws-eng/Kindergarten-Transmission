@@ -24,7 +24,7 @@ export default function AccountSyncClient() {
         setSyncing(bankId);
         setTimeout(() => {
             setSyncing(null);
-            showNotif('✅ 계좌 거래 내역을 성공적으로 가져왔습니다! (목업 데이터)');
+            showNotif('✅ 계좌 거래 내역을 성공적으로 가져왔습니다! (시뮬레이션 데이터)');
         }, 2000);
     };
 
@@ -32,7 +32,7 @@ export default function AccountSyncClient() {
         setSyncing('all');
         setTimeout(() => {
             setSyncing(null);
-            showNotif('✅ 전체 계좌 거래 내역 동기화 완료! (목업 데이터)');
+            showNotif('✅ 전체 계좌 거래 내역 동기화 완료! (시뮬레이션 데이터)');
         }, 2500);
     };
 

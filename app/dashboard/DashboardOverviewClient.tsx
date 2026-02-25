@@ -23,7 +23,7 @@ export default function DashboardOverviewClient() {
         setAnimating(true);
         setTimeout(() => {
             setAnimating(false);
-            alert('✅ 에듀파인 자동전송 시뮬레이션 완료!\n전송 건수: ' + pendingCount + '건\n(목업 데이터 - 실제 전송 아님)');
+            alert('✅ 에듀파인 자동전송 시뮬레이션 완료!\n전송 건수: ' + pendingCount + '건\n(시뮬레이션 데이터 - 실제 전송 아님)');
         }, 2000);
     };
 

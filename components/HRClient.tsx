@@ -301,7 +301,7 @@ export default function HrClient() {
                             <h3 className="font-semibold text-gray-900">2026년 2월 급여 내역</h3>
                             <div className="flex gap-2">
                                 {activeTab === '급여자료입력' && (
-                                    <button onClick={() => showNotif('기본급 및 수당 정보를 일괄 적용합니다. (목업)')} className="bg-white border border-gray-300 text-gray-700 text-sm px-4 py-2 rounded-lg hover:bg-gray-50">일괄입력</button>
+                                    <button onClick={() => showNotif('기본급 및 수당 정보를 일괄 적용합니다. (시뮬레이션)')} className="bg-white border border-gray-300 text-gray-700 text-sm px-4 py-2 rounded-lg hover:bg-gray-50">일괄입력</button>
                                 )}
                                 <button onClick={() => {
                                     // 모의 EDI 엑셀/CSV 파일 다운로드 로직
@@ -555,7 +555,7 @@ export default function HrClient() {
                         </div>
                         <div className="flex gap-2">
                             <button onClick={() => setShowPayrollModal(false)} className="flex-1 border border-gray-300 rounded-lg py-2 text-sm hover:bg-gray-50">닫기</button>
-                            <button onClick={() => { alert('✅ 급여 내역이 현금출납부에 반영되었습니다! (목업)'); setShowPayrollModal(false); }} className="flex-1 bg-indigo-600 text-white rounded-lg py-2 text-sm hover:bg-indigo-700">현금출납부 반영</button>
+                            <button onClick={() => { alert('✅ 급여 내역이 현금출납부에 반영되었습니다! (시뮬레이션)'); setShowPayrollModal(false); }} className="flex-1 bg-indigo-600 text-white rounded-lg py-2 text-sm hover:bg-indigo-700">현금출납부 반영</button>
                         </div>
                     </div>
                 </div>
@@ -637,65 +637,65 @@ export default function HrClient() {
 
                         <div className="border border-gray-200 rounded-lg overflow-hidden mb-4">
                             <div className="overflow-x-auto">
-                            <table className="whitespace-nowrap min-w-full text-sm">
-                                <thead>
-                                    <tr>
-                                        <th className="bg-gray-100 py-2 px-3 text-left border-b border-r border-gray-200 w-1/2 font-semibold">지급 내역</th>
-                                        <th className="bg-gray-100 py-2 px-3 text-left border-b border-gray-200 w-1/2 font-semibold">공제 내역</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td className="p-3 border-r border-gray-200 align-top">
-                                            <div className="flex justify-between mb-2">
-                                                <span className="text-gray-600">기본급</span>
-                                                <span className="font-medium">{selectedStub.baseSalary.toLocaleString()}원</span>
-                                            </div>
-                                            <div className="flex justify-between text-gray-400">
-                                                <span>직책수당</span>
-                                                <span>0원</span>
-                                            </div>
-                                            <div className="flex justify-between text-gray-400 mt-2">
-                                                <span>식대(비과세)</span>
-                                                <span>0원</span>
-                                            </div>
-                                        </td>
-                                        <td className="p-3 align-top bg-red-50/20">
-                                            <div className="flex justify-between mb-2">
-                                                <span className="text-gray-600">국민연금</span>
-                                                <span className="font-medium text-red-600">{calcInsurance(selectedStub.baseSalary).national.toLocaleString()}원</span>
-                                            </div>
-                                            <div className="flex justify-between mb-2">
-                                                <span className="text-gray-600">건강보험</span>
-                                                <span className="font-medium text-red-600">{calcInsurance(selectedStub.baseSalary).health.toLocaleString()}원</span>
-                                            </div>
-                                            <div className="flex justify-between mb-2">
-                                                <span className="text-gray-600">장기요양</span>
-                                                <span className="font-medium text-red-600">{calcInsurance(selectedStub.baseSalary).longterm.toLocaleString()}원</span>
-                                            </div>
-                                            <div className="flex justify-between">
-                                                <span className="text-gray-600">고용보험</span>
-                                                <span className="font-medium text-red-600">{calcInsurance(selectedStub.baseSalary).employment.toLocaleString()}원</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr className="bg-gray-50 border-t border-gray-200 font-bold">
-                                        <td className="p-3 border-r border-gray-200 text-blue-800 flex justify-between">
-                                            <span>지급합계</span>
-                                            <span>{selectedStub.baseSalary.toLocaleString()}원</span>
-                                        </td>
-                                        <td className="p-3 text-red-700 flex justify-between">
-                                            <span>공제합계</span>
-                                            <span>{(
-                                                calcInsurance(selectedStub.baseSalary).national +
-                                                calcInsurance(selectedStub.baseSalary).health +
-                                                calcInsurance(selectedStub.baseSalary).longterm +
-                                                calcInsurance(selectedStub.baseSalary).employment
-                                            ).toLocaleString()}원</span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                <table className="whitespace-nowrap min-w-full text-sm">
+                                    <thead>
+                                        <tr>
+                                            <th className="bg-gray-100 py-2 px-3 text-left border-b border-r border-gray-200 w-1/2 font-semibold">지급 내역</th>
+                                            <th className="bg-gray-100 py-2 px-3 text-left border-b border-gray-200 w-1/2 font-semibold">공제 내역</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td className="p-3 border-r border-gray-200 align-top">
+                                                <div className="flex justify-between mb-2">
+                                                    <span className="text-gray-600">기본급</span>
+                                                    <span className="font-medium">{selectedStub.baseSalary.toLocaleString()}원</span>
+                                                </div>
+                                                <div className="flex justify-between text-gray-400">
+                                                    <span>직책수당</span>
+                                                    <span>0원</span>
+                                                </div>
+                                                <div className="flex justify-between text-gray-400 mt-2">
+                                                    <span>식대(비과세)</span>
+                                                    <span>0원</span>
+                                                </div>
+                                            </td>
+                                            <td className="p-3 align-top bg-red-50/20">
+                                                <div className="flex justify-between mb-2">
+                                                    <span className="text-gray-600">국민연금</span>
+                                                    <span className="font-medium text-red-600">{calcInsurance(selectedStub.baseSalary).national.toLocaleString()}원</span>
+                                                </div>
+                                                <div className="flex justify-between mb-2">
+                                                    <span className="text-gray-600">건강보험</span>
+                                                    <span className="font-medium text-red-600">{calcInsurance(selectedStub.baseSalary).health.toLocaleString()}원</span>
+                                                </div>
+                                                <div className="flex justify-between mb-2">
+                                                    <span className="text-gray-600">장기요양</span>
+                                                    <span className="font-medium text-red-600">{calcInsurance(selectedStub.baseSalary).longterm.toLocaleString()}원</span>
+                                                </div>
+                                                <div className="flex justify-between">
+                                                    <span className="text-gray-600">고용보험</span>
+                                                    <span className="font-medium text-red-600">{calcInsurance(selectedStub.baseSalary).employment.toLocaleString()}원</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr className="bg-gray-50 border-t border-gray-200 font-bold">
+                                            <td className="p-3 border-r border-gray-200 text-blue-800 flex justify-between">
+                                                <span>지급합계</span>
+                                                <span>{selectedStub.baseSalary.toLocaleString()}원</span>
+                                            </td>
+                                            <td className="p-3 text-red-700 flex justify-between">
+                                                <span>공제합계</span>
+                                                <span>{(
+                                                    calcInsurance(selectedStub.baseSalary).national +
+                                                    calcInsurance(selectedStub.baseSalary).health +
+                                                    calcInsurance(selectedStub.baseSalary).longterm +
+                                                    calcInsurance(selectedStub.baseSalary).employment
+                                                ).toLocaleString()}원</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
 

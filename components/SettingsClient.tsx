@@ -110,30 +110,30 @@ export default function SettingsClient() {
                         {/* Keywords table */}
                         <div className="border border-gray-200 rounded-lg overflow-hidden">
                             <div className="overflow-x-auto">
-                            <table className="whitespace-nowrap min-min-w-full divide-y divide-gray-200 text-sm">
-                                <thead className="bg-gray-50">
-                                    <tr>
-                                        <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">키워드</th>
-                                        <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">자동 분개 계정</th>
-                                        <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">삭제</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100 bg-white">
-                                    {keywords.map(kw => (
-                                        <tr key={kw.id} className="hover:bg-gray-50">
-                                            <td className="px-4 py-3 font-medium text-gray-900">
-                                                <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded text-xs font-mono">{kw.keyword}</span>
-                                            </td>
-                                            <td className="px-4 py-3 text-gray-600">{kw.accountCode}</td>
-                                            <td className="px-4 py-3">
-                                                <button onClick={() => handleDeleteKeyword(kw.id)} className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50">
-                                                    <Trash2 className="w-4 h-4" />
-                                                </button>
-                                            </td>
+                                <table className="whitespace-nowrap min-min-w-full divide-y divide-gray-200 text-sm">
+                                    <thead className="bg-gray-50">
+                                        <tr>
+                                            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">키워드</th>
+                                            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">자동 분개 계정</th>
+                                            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">삭제</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100 bg-white">
+                                        {keywords.map(kw => (
+                                            <tr key={kw.id} className="hover:bg-gray-50">
+                                                <td className="px-4 py-3 font-medium text-gray-900">
+                                                    <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded text-xs font-mono">{kw.keyword}</span>
+                                                </td>
+                                                <td className="px-4 py-3 text-gray-600">{kw.accountCode}</td>
+                                                <td className="px-4 py-3">
+                                                    <button onClick={() => handleDeleteKeyword(kw.id)} className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50">
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -152,43 +152,43 @@ export default function SettingsClient() {
                             </div>
                             <div className="border border-gray-200 rounded-lg overflow-hidden">
                                 <div className="overflow-x-auto">
-                                <table className="whitespace-nowrap min-min-w-full text-sm divide-y divide-gray-200">
-                                    <thead className="bg-gray-50">
-                                        <tr>
-                                            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">은행명</th>
-                                            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">계좌번호</th>
-                                            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">기본 계정과목</th>
-                                            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">관리</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-100 bg-white">
-                                        {bankMappings.map(bm => (
-                                            <tr key={bm.id} className="hover:bg-gray-50">
-                                                <td className="px-4 py-3 font-medium">{bm.bankName}</td>
-                                                <td className="px-4 py-3 font-mono text-xs text-gray-600">{bm.accountNumber}</td>
-                                                <td className="px-4 py-3">
-                                                    <select
-                                                        defaultValue={bm.accountCodeId}
-                                                        onChange={e => {
-                                                            const ac = MOCK_ACCOUNT_CODES.find(a => a.id === e.target.value);
-                                                            setBankMappings(prev => prev.map(m => m.id === bm.id ? { ...m, accountCodeId: e.target.value, accountCodeName: ac?.name || '' } : m));
-                                                        }}
-                                                        className="border border-gray-300 rounded px-2 py-1 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
-                                                    >
-                                                        {MOCK_ACCOUNT_CODES.map(ac => (
-                                                            <option key={ac.id} value={ac.id}>{ac.code} - {ac.name}</option>
-                                                        ))}
-                                                    </select>
-                                                </td>
-                                                <td className="px-4 py-3">
-                                                    <button onClick={() => { setBankMappings(prev => prev.filter(m => m.id !== bm.id)); showNotif('🗑️ 삭제되었습니다.'); }} className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50">
-                                                        <X className="w-4 h-4" />
-                                                    </button>
-                                                </td>
+                                    <table className="whitespace-nowrap min-min-w-full text-sm divide-y divide-gray-200">
+                                        <thead className="bg-gray-50">
+                                            <tr>
+                                                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">은행명</th>
+                                                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">계좌번호</th>
+                                                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">기본 계정과목</th>
+                                                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">관리</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-100 bg-white">
+                                            {bankMappings.map(bm => (
+                                                <tr key={bm.id} className="hover:bg-gray-50">
+                                                    <td className="px-4 py-3 font-medium">{bm.bankName}</td>
+                                                    <td className="px-4 py-3 font-mono text-xs text-gray-600">{bm.accountNumber}</td>
+                                                    <td className="px-4 py-3">
+                                                        <select
+                                                            defaultValue={bm.accountCodeId}
+                                                            onChange={e => {
+                                                                const ac = MOCK_ACCOUNT_CODES.find(a => a.id === e.target.value);
+                                                                setBankMappings(prev => prev.map(m => m.id === bm.id ? { ...m, accountCodeId: e.target.value, accountCodeName: ac?.name || '' } : m));
+                                                            }}
+                                                            className="border border-gray-300 rounded px-2 py-1 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                                                        >
+                                                            {MOCK_ACCOUNT_CODES.map(ac => (
+                                                                <option key={ac.id} value={ac.id}>{ac.code} - {ac.name}</option>
+                                                            ))}
+                                                        </select>
+                                                    </td>
+                                                    <td className="px-4 py-3">
+                                                        <button onClick={() => { setBankMappings(prev => prev.filter(m => m.id !== bm.id)); showNotif('🗑️ 삭제되었습니다.'); }} className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50">
+                                                            <X className="w-4 h-4" />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -246,7 +246,7 @@ export default function SettingsClient() {
                         <div>
                             <h3 className="font-semibold text-gray-900 mb-3">데이터 관리</h3>
                             <div className="grid grid-cols-2 gap-3">
-                                <button onClick={() => alert('백업 파일이 다운로드됩니다. (목업)')} className="border border-gray-300 rounded-lg p-4 text-left hover:bg-gray-50 transition-colors">
+                                <button onClick={() => alert('백업 파일이 다운로드됩니다. (시뮬레이션)')} className="border border-gray-300 rounded-lg p-4 text-left hover:bg-gray-50 transition-colors">
                                     <div className="font-medium text-sm mb-1">📦 데이터 백업</div>
                                     <div className="text-xs text-gray-500">현재 데이터를 JSON 파일로 저장</div>
                                 </button>
@@ -259,9 +259,9 @@ export default function SettingsClient() {
 
                         <div className="bg-gray-900 rounded-lg p-4 text-xs font-mono">
                             <div className="text-gray-400 mb-2">시스템 정보</div>
-                            <div className="text-green-400">버전: 아이큐브 v2.0.0 (목업 모드)</div>
+                            <div className="text-green-400">버전: 아이큐브 v2.0.0 (시뮬레이션 모드)</div>
                             <div className="text-gray-400">환경: Vercel Edge Runtime</div>
-                            <div className="text-gray-400">DB: 목업 데이터 (in-memory)</div>
+                            <div className="text-gray-400">DB: 시뮬레이션 데이터 (in-memory)</div>
                             <div className="text-gray-400">빌드: {new Date().toLocaleDateString('ko-KR')}</div>
                         </div>
                     </div>
