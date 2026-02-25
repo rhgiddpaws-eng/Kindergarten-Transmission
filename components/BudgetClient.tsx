@@ -90,7 +90,7 @@ export default function BudgetClient() {
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
                 <h3 className="text-lg font-bold text-gray-800 mb-3">학년도 [2026년 ▼] 본예산 작성 현황</h3>
                 <div className="overflow-x-auto">
-                    <table className="min-w-full text-sm text-center border-collapse">
+                    <table className="whitespace-nowrap min-min-w-full text-sm text-center border-collapse">
                         <thead className="bg-[#eef4f9] text-[#003366] font-bold">
                             <tr>
                                 <th className="border p-2">구분</th>
@@ -152,7 +152,7 @@ export default function BudgetClient() {
 
                 {/* Table */}
                 <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200 text-sm">
+                    <table className="whitespace-nowrap min-min-w-full divide-y divide-gray-200 text-sm">
                         <thead className="bg-gray-50">
                             <tr>
                                 {['코드', '구분', '항목명', '예산액', '집행액', '잔액', '집행률', '집행률 Bar', '관리'].map(h => (

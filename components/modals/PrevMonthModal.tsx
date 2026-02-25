@@ -149,7 +149,8 @@ export default function PrevMonthModal({ isOpen, onClose, onImport, kindergarten
                 </div>
 
                 <div className="overflow-auto flex-1 bg-white">
-                    <table className="min-w-full divide-y divide-gray-200">
+                    <div className="overflow-x-auto">
+                    <table className="whitespace-nowrap min-min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-100 sticky top-0 z-10 shadow-sm">
                             <tr>
                                 <th scope="col" className="px-4 py-3 text-center border-b border-gray-300">
@@ -220,6 +221,7 @@ export default function PrevMonthModal({ isOpen, onClose, onImport, kindergarten
                             )}
                         </tbody>
                     </table>
+                    </div>
                 </div>
 
                 <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-between items-center">

@@ -61,7 +61,7 @@ export default function LaborClient() {
                     <h3 className="font-semibold text-gray-900 border-l-4 border-indigo-600 pl-2">2026년 2월 4대보험 고지내역 대사 (계산액 vs 고지액)</h3>
                 </div>
                 <div className="overflow-x-auto">
-                    <table className="min-w-full text-sm border border-gray-200 whitespace-nowrap">
+                    <table className="min-min-w-full text-sm border border-gray-200 whitespace-nowrap">
                         <thead className="bg-[#eef4f9]">
                             <tr>
                                 {['이름', '직책', '구분', '국민연금', '건강보험', '장기요양', '고용보험', '계(근로자부담)', '계(사업장부담)'].map(h => (

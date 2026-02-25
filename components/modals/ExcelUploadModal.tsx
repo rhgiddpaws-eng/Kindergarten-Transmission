@@ -98,7 +98,8 @@ export default function ExcelUploadModal({ isOpen, onClose, onImport, accountCod
                             <p className="text-sm mt-1">파일의 데이터가 여기에 미리보기로 표시됩니다.</p>
                         </div>
                     ) : (
-                        <table className="min-w-full divide-y divide-gray-200">
+                        <div className="overflow-x-auto">
+                        <table className="whitespace-nowrap min-min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-100 sticky top-0 z-0 shadow-sm">
                                 <tr>
                                     <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">일자</th>
@@ -124,6 +125,7 @@ export default function ExcelUploadModal({ isOpen, onClose, onImport, accountCod
                                 ))}
                             </tbody>
                         </table>
+                        </div>
                     )}
                 </div>
 

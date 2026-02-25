@@ -49,7 +49,8 @@ export default function PrevYearBudgetModal({ isOpen, onClose, onImport }: PrevY
 
                 <div className="p-6 bg-gray-50 flex-1 overflow-y-auto">
                     <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden mb-4">
-                        <table className="min-w-full divide-y divide-gray-200 text-sm">
+                        <div className="overflow-x-auto">
+                        <table className="whitespace-nowrap min-min-w-full divide-y divide-gray-200 text-sm">
                             <thead className="bg-gray-50 text-gray-700">
                                 <tr>
                                     <th className="px-4 py-3 text-left font-semibold">산출구분</th>
@@ -83,6 +84,7 @@ export default function PrevYearBudgetModal({ isOpen, onClose, onImport }: PrevY
                                 </tr>
                             </tfoot>
                         </table>
+                        </div>
                     </div>
 
                     <div className="p-4 bg-indigo-50 text-indigo-800 rounded-lg text-sm flex gap-3 items-start border border-indigo-100">

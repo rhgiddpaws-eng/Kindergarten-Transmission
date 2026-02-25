@@ -109,7 +109,8 @@ export default function SettingsClient() {
 
                         {/* Keywords table */}
                         <div className="border border-gray-200 rounded-lg overflow-hidden">
-                            <table className="min-w-full divide-y divide-gray-200 text-sm">
+                            <div className="overflow-x-auto">
+                            <table className="whitespace-nowrap min-min-w-full divide-y divide-gray-200 text-sm">
                                 <thead className="bg-gray-50">
                                     <tr>
                                         <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">키워드</th>
@@ -133,6 +134,7 @@ export default function SettingsClient() {
                                     ))}
                                 </tbody>
                             </table>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -149,7 +151,8 @@ export default function SettingsClient() {
                                 💡 계좌별로 기본 계정을 매핑해두면 계좌에서 가져온 거래가 자동으로 해당 계정에 분류됩니다.
                             </div>
                             <div className="border border-gray-200 rounded-lg overflow-hidden">
-                                <table className="min-w-full text-sm divide-y divide-gray-200">
+                                <div className="overflow-x-auto">
+                                <table className="whitespace-nowrap min-min-w-full text-sm divide-y divide-gray-200">
                                     <thead className="bg-gray-50">
                                         <tr>
                                             <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">은행명</th>
@@ -186,6 +189,7 @@ export default function SettingsClient() {
                                         ))}
                                     </tbody>
                                 </table>
+                                </div>
                             </div>
                         </div>
 

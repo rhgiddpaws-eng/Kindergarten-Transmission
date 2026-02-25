@@ -178,22 +178,24 @@ export default function HrClient() {
                                         }
                                     }} className="bg-indigo-600 text-white px-3 py-1 rounded text-sm whitespace-nowrap">+ 추가</button>
                                 </div>
-                                <table className="min-w-full text-sm">
-                                    <thead className="bg-gray-100">
-                                        <tr><th className="px-4 py-2 border-b text-left">코드</th><th className="px-4 py-2 border-b text-left">명칭</th><th className="px-4 py-2 border-b text-center">관리</th></tr>
-                                    </thead>
-                                    <tbody className="bg-white">
-                                        {positionCodes.map((pc, idx) => (
-                                            <tr key={idx}>
-                                                <td className="px-4 py-2 border-b text-gray-500">{pc.code}</td>
-                                                <td className="px-4 py-2 border-b font-medium">{pc.name}</td>
-                                                <td className="px-4 py-2 border-b text-center">
-                                                    <button onClick={() => setPositionCodes(positionCodes.filter((_, i) => i !== idx))} className="text-red-500 hover:text-red-700 text-xs font-semibold">삭제</button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                <div className="overflow-x-auto">
+                                    <table className="whitespace-nowrap min-min-w-full text-sm">
+                                        <thead className="bg-gray-100">
+                                            <tr><th className="px-4 py-2 border-b text-left">코드</th><th className="px-4 py-2 border-b text-left">명칭</th><th className="px-4 py-2 border-b text-center">관리</th></tr>
+                                        </thead>
+                                        <tbody className="bg-white">
+                                            {positionCodes.map((pc, idx) => (
+                                                <tr key={idx}>
+                                                    <td className="px-4 py-2 border-b text-gray-500">{pc.code}</td>
+                                                    <td className="px-4 py-2 border-b font-medium">{pc.name}</td>
+                                                    <td className="px-4 py-2 border-b text-center">
+                                                        <button onClick={() => setPositionCodes(positionCodes.filter((_, i) => i !== idx))} className="text-red-500 hover:text-red-700 text-xs font-semibold">삭제</button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                             {/* 지급/공제 항목 */}
                             <div className="flex-1 border border-gray-200 rounded-lg overflow-hidden flex flex-col">
@@ -219,74 +221,78 @@ export default function HrClient() {
                                         }
                                     }} className="bg-indigo-600 text-white px-3 py-1 rounded text-sm whitespace-nowrap">+ 추가</button>
                                 </div>
-                                <table className="min-w-full text-sm">
-                                    <thead className="bg-gray-100">
-                                        <tr><th className="px-4 py-2 border-b text-left w-[60px]">구분</th><th className="px-4 py-2 border-b text-left">명칭</th><th className="px-4 py-2 border-b text-center">과세구분</th><th className="px-4 py-2 border-b text-center">관리</th></tr>
-                                    </thead>
-                                    <tbody className="bg-white">
-                                        {payItems.map((pi, idx) => (
-                                            <tr key={idx}>
-                                                <td className="px-4 py-2 border-b">
-                                                    <span className={`font-bold px-2 py-0.5 rounded text-xs ${pi.type === '지급' ? 'text-blue-600 bg-blue-50' : 'text-red-600 bg-red-50'}`}>{pi.type}</span>
-                                                </td>
-                                                <td className="px-4 py-2 border-b font-medium">{pi.name}</td>
-                                                <td className="px-4 py-2 border-b text-center text-gray-600">{pi.tax}</td>
-                                                <td className="px-4 py-2 border-b text-center">
-                                                    <button onClick={() => setPayItems(payItems.filter((_, i) => i !== idx))} className="text-red-500 hover:text-red-700 text-xs font-semibold">삭제</button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                <div className="overflow-x-auto">
+                                    <table className="whitespace-nowrap min-min-w-full text-sm">
+                                        <thead className="bg-gray-100">
+                                            <tr><th className="px-4 py-2 border-b text-left w-[60px]">구분</th><th className="px-4 py-2 border-b text-left">명칭</th><th className="px-4 py-2 border-b text-center">과세구분</th><th className="px-4 py-2 border-b text-center">관리</th></tr>
+                                        </thead>
+                                        <tbody className="bg-white">
+                                            {payItems.map((pi, idx) => (
+                                                <tr key={idx}>
+                                                    <td className="px-4 py-2 border-b">
+                                                        <span className={`font-bold px-2 py-0.5 rounded text-xs ${pi.type === '지급' ? 'text-blue-600 bg-blue-50' : 'text-red-600 bg-red-50'}`}>{pi.type}</span>
+                                                    </td>
+                                                    <td className="px-4 py-2 border-b font-medium">{pi.name}</td>
+                                                    <td className="px-4 py-2 border-b text-center text-gray-600">{pi.tax}</td>
+                                                    <td className="px-4 py-2 border-b text-center">
+                                                        <button onClick={() => setPayItems(payItems.filter((_, i) => i !== idx))} className="text-red-500 hover:text-red-700 text-xs font-semibold">삭제</button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
                 )}
 
                 {activeTab === '사원등록' && (
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                {['이름', '직위', '부서', '기본급', '입사일', '상태', '관리'].map(h => (
-                                    <th key={h} className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{h}</th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-100">
-                            {employees.map(emp => (
-                                <tr key={emp.id} className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-sm">
-                                                {emp.name.charAt(0)}
-                                            </div>
-                                            <span className="font-medium text-gray-900">{emp.name}</span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-sm text-gray-600">{emp.position}</td>
-                                    <td className="px-6 py-4 text-sm text-gray-600">{emp.department}</td>
-                                    <td className="px-6 py-4 text-sm font-semibold text-gray-900">{emp.baseSalary.toLocaleString()} 원</td>
-                                    <td className="px-6 py-4 text-sm text-gray-500">{emp.hireDate}</td>
-                                    <td className="px-6 py-4">
-                                        <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${emp.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
-                                            {emp.isActive ? '재직' : '퇴직'}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex gap-2">
-                                            <button onClick={() => { setEditTarget(emp); setForm({ name: emp.name, position: emp.position, department: emp.department, baseSalary: emp.baseSalary.toLocaleString() }); }}
-                                                className="text-indigo-600 hover:text-indigo-900 p-1 rounded hover:bg-indigo-50">
-                                                <Edit className="w-4 h-4" />
-                                            </button>
-                                            <button onClick={() => handleDelete(emp.id)} className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50">
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
-                                        </div>
-                                    </td>
+                    <div className="overflow-x-auto">
+                        <table className="whitespace-nowrap min-min-w-full divide-y divide-gray-200">
+                            <thead className="bg-gray-50">
+                                <tr>
+                                    {['이름', '직위', '부서', '기본급', '입사일', '상태', '관리'].map(h => (
+                                        <th key={h} className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{h}</th>
+                                    ))}
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-100">
+                                {employees.map(emp => (
+                                    <tr key={emp.id} className="hover:bg-gray-50 transition-colors">
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-sm">
+                                                    {emp.name.charAt(0)}
+                                                </div>
+                                                <span className="font-medium text-gray-900">{emp.name}</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-gray-600">{emp.position}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-600">{emp.department}</td>
+                                        <td className="px-6 py-4 text-sm font-semibold text-gray-900">{emp.baseSalary.toLocaleString()} 원</td>
+                                        <td className="px-6 py-4 text-sm text-gray-500">{emp.hireDate}</td>
+                                        <td className="px-6 py-4">
+                                            <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${emp.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                                                {emp.isActive ? '재직' : '퇴직'}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex gap-2">
+                                                <button onClick={() => { setEditTarget(emp); setForm({ name: emp.name, position: emp.position, department: emp.department, baseSalary: emp.baseSalary.toLocaleString() }); }}
+                                                    className="text-indigo-600 hover:text-indigo-900 p-1 rounded hover:bg-indigo-50">
+                                                    <Edit className="w-4 h-4" />
+                                                </button>
+                                                <button onClick={() => handleDelete(emp.id)} className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50">
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 )}
 
                 {(activeTab === '급여자료입력' || activeTab === '급여대장출력') && (
@@ -318,68 +324,70 @@ export default function HrClient() {
                                 </button>
                             </div>
                         </div>
-                        <table className="min-w-full text-sm border border-gray-200">
-                            <thead className="bg-gray-100">
-                                <tr>
-                                    {['이름', '직위', '기본급', '국민연금(-)', '건강보험(-)', '고용보험(-)', '실수령액'].map(h => (
-                                        <th key={h} className="px-4 py-2 text-left text-xs font-semibold text-gray-600 border-r border-gray-200">{h}</th>
-                                    ))}
-                                    {activeTab === '급여대장출력' && (
-                                        <th className="px-4 py-2 text-center text-xs font-semibold text-gray-600 border-r border-gray-200">명세서 관리</th>
-                                    )}
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-100">
-                                {employees.filter(e => e.isActive).map(emp => {
-                                    const ins = calcInsurance(emp.baseSalary);
-                                    const total = ins.national + ins.health + ins.longterm + ins.employment;
-                                    return (
-                                        <tr key={emp.id} className="hover:bg-gray-50">
-                                            <td className="px-4 py-3 font-medium border-r border-gray-200">{emp.name}</td>
-                                            <td className="px-4 py-3 text-gray-600 border-r border-gray-200">{emp.position}</td>
-                                            <td className="px-4 py-3 text-right font-medium border-r border-gray-200">
-                                                {activeTab === '급여자료입력' ? (
-                                                    <input
-                                                        type="number"
-                                                        value={emp.baseSalary}
-                                                        onChange={(e) => {
-                                                            const newSalary = parseInt(e.target.value) || 0;
-                                                            setEmployees(prev => prev.map(p => p.id === emp.id ? { ...p, baseSalary: newSalary } : p));
-                                                        }}
-                                                        className="w-[100px] text-right border border-gray-300 rounded px-1 py-1 text-sm outline-none focus:border-indigo-500 bg-white"
-                                                    />
-                                                ) : (
-                                                    emp.baseSalary.toLocaleString()
-                                                )}
-                                            </td>
-                                            <td className="px-4 py-3 text-right text-red-500 border-r border-gray-200">{ins.national.toLocaleString()}</td>
-                                            <td className="px-4 py-3 text-right text-red-500 border-r border-gray-200">{ins.health.toLocaleString()}</td>
-                                            <td className="px-4 py-3 text-right text-red-500 border-r border-gray-200">{ins.employment.toLocaleString()}</td>
-                                            <td className="px-4 py-3 text-right font-bold text-green-600">{(emp.baseSalary - total).toLocaleString()}</td>
-                                            {activeTab === '급여대장출력' && (
-                                                <td className="px-4 py-3 text-center border-r border-gray-200">
-                                                    <button
-                                                        onClick={() => setSelectedStub(emp)}
-                                                        className="inline-flex items-center gap-1 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-2 py-1 rounded text-xs transition-colors"
-                                                    >
-                                                        <FileText className="w-3 h-3 text-blue-600" />
-                                                        명세서 보기
-                                                    </button>
+                        <div className="overflow-x-auto">
+                            <table className="whitespace-nowrap min-min-w-full text-sm border border-gray-200">
+                                <thead className="bg-gray-100">
+                                    <tr>
+                                        {['이름', '직위', '기본급', '국민연금(-)', '건강보험(-)', '고용보험(-)', '실수령액'].map(h => (
+                                            <th key={h} className="px-4 py-2 text-left text-xs font-semibold text-gray-600 border-r border-gray-200">{h}</th>
+                                        ))}
+                                        {activeTab === '급여대장출력' && (
+                                            <th className="px-4 py-2 text-center text-xs font-semibold text-gray-600 border-r border-gray-200">명세서 관리</th>
+                                        )}
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100">
+                                    {employees.filter(e => e.isActive).map(emp => {
+                                        const ins = calcInsurance(emp.baseSalary);
+                                        const total = ins.national + ins.health + ins.longterm + ins.employment;
+                                        return (
+                                            <tr key={emp.id} className="hover:bg-gray-50">
+                                                <td className="px-4 py-3 font-medium border-r border-gray-200">{emp.name}</td>
+                                                <td className="px-4 py-3 text-gray-600 border-r border-gray-200">{emp.position}</td>
+                                                <td className="px-4 py-3 text-right font-medium border-r border-gray-200">
+                                                    {activeTab === '급여자료입력' ? (
+                                                        <input
+                                                            type="number"
+                                                            value={emp.baseSalary}
+                                                            onChange={(e) => {
+                                                                const newSalary = parseInt(e.target.value) || 0;
+                                                                setEmployees(prev => prev.map(p => p.id === emp.id ? { ...p, baseSalary: newSalary } : p));
+                                                            }}
+                                                            className="w-[100px] text-right border border-gray-300 rounded px-1 py-1 text-sm outline-none focus:border-indigo-500 bg-white"
+                                                        />
+                                                    ) : (
+                                                        emp.baseSalary.toLocaleString()
+                                                    )}
                                                 </td>
-                                            )}
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                            <tfoot className="bg-gray-100">
-                                <tr>
-                                    <td colSpan={2} className="px-4 py-2 font-bold">합 계</td>
-                                    <td className="px-4 py-2 text-right font-bold">{employees.reduce((a, e) => a + e.baseSalary, 0).toLocaleString()}</td>
-                                    <td colSpan={4}></td>
-                                    {activeTab === '급여대장출력' && <td></td>}
-                                </tr>
-                            </tfoot>
-                        </table>
+                                                <td className="px-4 py-3 text-right text-red-500 border-r border-gray-200">{ins.national.toLocaleString()}</td>
+                                                <td className="px-4 py-3 text-right text-red-500 border-r border-gray-200">{ins.health.toLocaleString()}</td>
+                                                <td className="px-4 py-3 text-right text-red-500 border-r border-gray-200">{ins.employment.toLocaleString()}</td>
+                                                <td className="px-4 py-3 text-right font-bold text-green-600">{(emp.baseSalary - total).toLocaleString()}</td>
+                                                {activeTab === '급여대장출력' && (
+                                                    <td className="px-4 py-3 text-center border-r border-gray-200">
+                                                        <button
+                                                            onClick={() => setSelectedStub(emp)}
+                                                            className="inline-flex items-center gap-1 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-2 py-1 rounded text-xs transition-colors"
+                                                        >
+                                                            <FileText className="w-3 h-3 text-blue-600" />
+                                                            명세서 보기
+                                                        </button>
+                                                    </td>
+                                                )}
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                                <tfoot className="bg-gray-100">
+                                    <tr>
+                                        <td colSpan={2} className="px-4 py-2 font-bold">합 계</td>
+                                        <td className="px-4 py-2 text-right font-bold">{employees.reduce((a, e) => a + e.baseSalary, 0).toLocaleString()}</td>
+                                        <td colSpan={4}></td>
+                                        {activeTab === '급여대장출력' && <td></td>}
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                     </div>
                 )}
 
@@ -410,7 +418,7 @@ export default function HrClient() {
                             </div>
                         </div>
                         <div className="overflow-x-auto">
-                            <table className="min-w-full text-sm border border-gray-200 whitespace-nowrap">
+                            <table className="min-min-w-full text-sm border border-gray-200 whitespace-nowrap">
                                 <thead className="bg-gray-100">
                                     <tr>
                                         {['이름', '구분', '국민연금', '건강보험', '장기요양', '고용보험', '계(근로자)', '계(사용자)'].map(h => (
@@ -628,7 +636,8 @@ export default function HrClient() {
                         </div>
 
                         <div className="border border-gray-200 rounded-lg overflow-hidden mb-4">
-                            <table className="w-full text-sm">
+                            <div className="overflow-x-auto">
+                            <table className="whitespace-nowrap min-w-full text-sm">
                                 <thead>
                                     <tr>
                                         <th className="bg-gray-100 py-2 px-3 text-left border-b border-r border-gray-200 w-1/2 font-semibold">지급 내역</th>
@@ -687,6 +696,7 @@ export default function HrClient() {
                                     </tr>
                                 </tbody>
                             </table>
+                            </div>
                         </div>
 
                         <div className="bg-green-50 rounded-xl p-5 mb-6 border border-green-100 flex justify-between items-center">

@@ -262,7 +262,8 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
 
             {/* Data Table */}
             <div className="flex-1 overflow-auto border-t-2 border-b-2 border-[#00a9ba]">
-                <table className="w-full border-collapse" style={{ tableLayout: 'fixed' }}>
+                <div className="overflow-x-auto">
+                <table className="whitespace-nowrap min-w-full border-collapse" style={{ tableLayout: 'fixed' }}>
                     <thead className="bg-[#00a9ba] text-white sticky top-0 z-10">
                         <tr>
                             <th className="border-r border-b border-[#0d7382] w-[30px] p-1 text-center font-normal"><input type="checkbox" className="w-[11px] h-[11px]" /></th>
@@ -361,6 +362,7 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
                         ))}
                     </tbody>
                 </table>
+                </div>
             </div>
 
             {/* Bottom Summary */}
@@ -427,7 +429,8 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
                         <div className="bg-[#b3d4e6]/30 rounded p-3 mb-3 text-[12px] border border-[#b3d4e6]">
                             은행 계좌 현황에서 거래 내역을 현금출납부로 가져옵니다.
                         </div>
-                        <table className="w-full text-[12px] border border-gray-200 mb-3">
+                        <div className="overflow-x-auto">
+                        <table className="whitespace-nowrap min-w-full text-[12px] border border-gray-200 mb-3">
                             <thead className="bg-[#b3d4e6] text-[#003366]">
                                 <tr>
                                     <th className="p-1.5 text-left border-r border-gray-200">은행명</th>
@@ -452,6 +455,7 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
                                 </tr>
                             </tbody>
                         </table>
+                        </div>
                         <div className="flex gap-2">
                             <button onClick={() => setShowAccountImport(false)} className="flex-1 border border-gray-300 rounded py-1.5 text-[12px] hover:bg-gray-50">닫기</button>
                             <button onClick={() => {
@@ -472,7 +476,8 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
                         <div className="bg-gray-50 rounded p-2 mb-3 text-[12px]">
                             <div className="flex justify-between"><span>원금액:</span><strong>850,000원</strong></div>
                         </div>
-                        <table className="w-full text-[12px] border border-gray-200 mb-3">
+                        <div className="overflow-x-auto">
+                        <table className="whitespace-nowrap min-w-full text-[12px] border border-gray-200 mb-3">
                             <thead className="bg-[#00a9ba] text-white">
                                 <tr>
                                     <th className="p-1.5 text-center border-r border-white/30">계정과목</th>
@@ -511,6 +516,7 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
                                 </tr>
                             </tfoot>
                         </table>
+                        </div>
                         <div className="flex gap-2">
                             <button onClick={() => setShowMultiJournal(false)} className="flex-1 border border-gray-300 rounded py-1.5 text-[12px] hover:bg-gray-50">취소</button>
                             <button onClick={() => { alert('✅ 다중분개 저장 완료!'); setShowMultiJournal(false); }} className="flex-1 bg-indigo-600 text-white rounded py-1.5 text-[12px] hover:bg-indigo-700">저장</button>
@@ -588,7 +594,8 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
                             <h3 className="font-bold text-[#005ba6]">계좌 현황 뷰어</h3>
                             <button onClick={() => setShowAccountStatus(false)} className="text-gray-500 hover:text-gray-800">✖</button>
                         </div>
-                        <table className="w-full text-sm border">
+                        <div className="overflow-x-auto">
+                        <table className="whitespace-nowrap min-w-full text-sm border">
                             <thead className="bg-gray-100">
                                 <tr><th className="border p-2">은행명</th><th className="border p-2">계좌번호</th><th className="border p-2">잔액 (원)</th></tr>
                             </thead>
@@ -597,6 +604,7 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
                                 <tr><td className="border p-2 text-center">신한은행</td><td className="border p-2 text-center">110-123-456789</td><td className="border p-2 text-right font-bold text-blue-600">12,400,000</td></tr>
                             </tbody>
                         </table>
+                        </div>
                         <div className="text-right mt-4">
                             <button onClick={() => setShowAccountStatus(false)} className="px-4 py-2 bg-gray-200 rounded text-sm hover:bg-gray-300">닫기</button>
                         </div>
@@ -621,7 +629,8 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
                                 }
                             }} className="bg-[#005ba6] text-white px-3 py-1.5 text-sm rounded">추가</button>
                         </div>
-                        <table className="w-full text-sm border">
+                        <div className="overflow-x-auto">
+                        <table className="whitespace-nowrap min-w-full text-sm border">
                             <thead className="bg-gray-100">
                                 <tr><th className="border p-2 w-[50px]">ID</th><th className="border p-2">거래처명</th><th className="border p-2 w-[120px]">사업자번호</th><th className="border p-2 w-[60px]">비고</th></tr>
                             </thead>
@@ -638,6 +647,7 @@ export default function TransactionsClient({ initialTransactions, kindergartens,
                                 ))}
                             </tbody>
                         </table>
+                        </div>
                         <div className="text-right mt-4">
                             <button onClick={() => setShowClientManagement(false)} className="px-4 py-2 bg-gray-200 rounded text-sm hover:bg-gray-300">확인완료</button>
                         </div>

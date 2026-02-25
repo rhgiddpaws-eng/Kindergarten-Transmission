@@ -92,7 +92,8 @@ export default function CmsClient() {
                 <div className="flex justify-between items-center mb-4">
                     <h3 className="font-semibold text-gray-900 border-l-4 border-indigo-600 pl-2">최신 e키즈빌CMS 출금/입금 상세내역</h3>
                 </div>
-                <table className="min-w-full text-sm border border-gray-200">
+                <div className="overflow-x-auto">
+                <table className="whitespace-nowrap min-min-w-full text-sm border border-gray-200">
                     <thead className="bg-[#eef4f9]">
                         <tr>
                             <th className="px-4 py-2 text-center w-[40px] border-r border-gray-200"><input type="checkbox" /></th>
@@ -118,6 +119,7 @@ export default function CmsClient() {
                         ))}
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     );
